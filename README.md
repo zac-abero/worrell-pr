@@ -13,3 +13,6 @@ https://www.nature.com/articles/s41467-019-11144-6
 TEC (Tecan) Software
 https://www.meerstetter.ch/customer-center/downloads/category/7-tec-family-firmware-and-service-software
 https://lifesciences.tecan.com/software-overview?utm_term=tecan%20reader&utm_campaign=SO-Brand&utm_source=adwords&utm_medium=ppc&gad_source=1
+
+Tecan Infinite M1000 User Guide
+https://med.stanford.edu/content/dam/sm/htbc/documents/eq/30036266_IFU_InfiniteM1000_V1_6_English.pdf
