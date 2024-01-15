@@ -16,3 +16,6 @@ https://lifesciences.tecan.com/software-overview?utm_term=tecan%20reader&utm_cam
 
 Tecan Infinite M1000 User Guide
 https://med.stanford.edu/content/dam/sm/htbc/documents/eq/30036266_IFU_InfiniteM1000_V1_6_English.pdf
+
+Tecan to Python xml output code
+https://github.com/choderalab/assaytools/blob/master/scripts/xml2png.py
