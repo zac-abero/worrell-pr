@@ -4,7 +4,6 @@ Worrell-PR (Plate Reader) A general repository for the Worrell Lab Tecan Infinit
 
 Cold Plates & Peltier Contextual videos
 https://www.youtube.com/watch?v=FPFE7i7bz9Y
-https://www.youtube.com/watch?v=FPFE7i7bz9Y
 
 Glass-Transistion Thermomechanical Dye Papers 
 https://pubs.rsc.org/en/content/articlelanding/2015/PY/C5PY00308C
