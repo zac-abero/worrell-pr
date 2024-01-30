@@ -18,4 +18,6 @@ https://med.stanford.edu/content/dam/sm/htbc/documents/eq/30036266_IFU_InfiniteM
 
 Tecan to Python xml output code
 https://github.com/choderalab/assaytools/blob/master/scripts/xml2png.py
-[Drawing.pdf](https://github.com/zac-abero/worrell-pr/files/14102888/Drawing.pdf)
+
+
+![Drawing](https://github.com/zac-abero/worrell-pr/assets/109258998/2f69e544-a255-4971-b41f-86a42289b29d)
