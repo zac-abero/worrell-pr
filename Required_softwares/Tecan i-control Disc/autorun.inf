@@ -1,0 +1,7 @@
+[AutoRun]
+OPEN=Tecan.exe
+LABEL=i-control V1.7 SP1
+ICON=Tecan.ico
+ACTION=i-control V1.7 SP1
+
+
