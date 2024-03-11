@@ -22,5 +22,19 @@ https://github.com/choderalab/assaytools/blob/master/scripts/xml2png.py
 https://www.youtube.com/watch?v=XPZUfntiyNU
 https://www.youtube.com/watch?v=8l-SAYPHo9M
 
-
+# Basic Functionality Illustration
 ![Drawing](https://github.com/zac-abero/worrell-pr/assets/109258998/2f69e544-a255-4971-b41f-86a42289b29d)
+
+# Physical Prototype Specs:
+
+Thermoelectric-Cooling Temperature Control Board
+https://www.meerstetter.ch/products/tec-controllers/tec-1163
+
+TEC-1163 Display (DPY-1114)
+https://www.meerstetter.ch/products/systems-software-accessories/displays/dpy-1114
+
+PT100 Temperature Sensor
+https://www.omega.com/en-us/temperature-measurement/temperature-sensing-elements/p/PRTDCAP
+
+Power Supply (MeanWell)
+https://www.meanwell-web.com/en-gb/ac-dc-slim-single-output-enclosed-power-supply-uhp--1000--48
