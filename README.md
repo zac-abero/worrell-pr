@@ -42,6 +42,9 @@ https://www.meerstetter.ch/products/tec-controllers/tec-1163
 TEC-1163 Display (DPY-1114)
 https://www.meerstetter.ch/products/systems-software-accessories/displays/dpy-1114
 
+TECs (VT-127-1.4-1.5-72, POTTED)
+https://tetech.com/product/vt-127-1-4-1-5-72/
+
 PT100 Temperature Sensor
 https://www.omega.com/en-us/temperature-measurement/temperature-sensing-elements/p/PRTDCAP
 
