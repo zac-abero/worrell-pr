@@ -30,7 +30,8 @@ https://www.youtube.com/watch?v=8l-SAYPHo9M
 # Enclosure 
 ![ZAC01731](https://github.com/zac-abero/worrell-pr/assets/109258998/cd69b52c-e12f-434b-88ed-7e2234cb9df6)
 # Full System
-![ZAC01731](https://github.com/zac-abero/worrell-pr/assets/109258998/9a700ddc-943e-4ddf-adcc-0c84bbaa58ce)
+![ZAC01725](https://github.com/zac-abero/worrell-pr/assets/109258998/7ab231f6-3157-42fa-9f80-c9da2e02d09f)
+
 
 # Physical Prototype Specs:
 
