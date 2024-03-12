@@ -50,3 +50,5 @@ https://www.omega.com/en-us/temperature-measurement/temperature-sensing-elements
 
 Power Supply (MeanWell)
 https://www.meanwell-web.com/en-gb/ac-dc-slim-single-output-enclosed-power-supply-uhp--1000--48
+
+3C/min maximum increase
