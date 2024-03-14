@@ -6,11 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from win32com.client import dynamic
 
-# Test print
-
-print("Worrell Plate Reader sample data test")
-
-# Fetching active workbook 
+# Fetching the active workbook (ideally the one booted by the Tecan i-control software)
 
 wb = xw.books.active
 
@@ -18,7 +14,7 @@ wb = xw.books.active
 
 print(wb.sheets[0].range("A1").value)
 
-# Rows
+# Selecting the first column and printing every value in it
 for cell in wb.sheets[0].range('A:A')[1:]:
     print(cell.value)
     if cell.value == "End Time:":
