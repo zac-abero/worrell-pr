@@ -41,6 +41,7 @@ https://www.meerstetter.ch/products/tec-controllers/tec-1163
 
 TEC-1163 Display (DPY-1114)
 https://www.meerstetter.ch/products/systems-software-accessories/displays/dpy-1114
+NOTE: Peltier must be wired Black to + and Red to - in order to not diverge
 
 TECs (VT-127-1.4-1.5-72, POTTED)
 https://tetech.com/product/vt-127-1-4-1-5-72/
