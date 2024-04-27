@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 
     # value - What you're looking for, particularly if a cell has "End Time:" in it
 
-    # range - Where you're looking for, format in cell range such as 'A:A'
+    # range - Which column you're looking in, format in cell range such as 'A:A'
 
     # sheet_number - The sheet number (sheets are inverse indexed, Sheet1 becomes the last sheet in the array)
 
@@ -17,9 +17,10 @@ import matplotlib.pyplot as plt
 
 def find_cell(value, range, sheet_number):
     wb = xw.books.active
-    for cell in wb.sheets[sheet_number].range(range)[1:]:
+    for cell in wb.sheets[sheet_number].range(range)[0:]:
         if cell.value == value:
             break
-    return cell
+    return cell.row, cell.column
+
 
 
