@@ -1,3 +1,5 @@
+from IPython.display import display, HTML
+
 import xlwings as xw
 import pandas as pd
 import numpy as np
@@ -18,23 +20,35 @@ for sheet in wb.sheets:
     
 data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])
 
-for sheet in wb.sheets:    
+for sheet in wb.sheets:
     # Excel is 1-based 
     sheet_number = num_sheets - sheet.index
     
-    startTime = find_cell("Start Time:", 'A:A', sheet_number)
-    endTime = find_cell("End Time:", 'A:A', sheet_number)
-    gain = find_cell("Gain", 'A:A',  sheet_number)
-    mean = find_cell("Mean", 'B:B',  sheet_number)
-    stDev = find_cell("StDev", 'C:C', sheet_number)
+    startTime_position = find_cell("Start Time:", 'A:A', sheet_number)
+    endTime_position = find_cell("End Time:", 'A:A', sheet_number)
+    gain_position = find_cell("Gain", 'A:A',  sheet_number)
+    mean_position = find_cell("Mean", 'B:B',  sheet_number)
+    stDev_position = find_cell("StDev", 'C:C', sheet_number)
     # figure out nonetype comparison in temperature or use starttime/endtime to calculate temp from .csv data
-    # temp = find_cell("Temperature", 'B:B', sheet_number)
+    ## temp = find_cell("Temperature", 'B:B', sheet_number)
     
-    # need to create a dict for multiple data rows for mean and stdev 
+    # need to create a dict for multiple data rows for mean and stdev and then append to the dataframe
+    
+    #   fluoresence vs temperature in real time
         
+    startTime = sheet.range(startTime_position).offset(0,1).value
+    endTime = sheet.range(endTime_position).offset(0,1).value
+    gain = sheet.range(gain_position).offset(0,4).value
+    mean = sheet.range(mean_position).value
+    stDev = sheet.range(stDev_position).value
+        
+    sheet_dict = {'Sheet': sheet_number, 'StartTime': startTime, 'EndTime': endTime, 'Gain': gain, 'Mean': mean, 'StDev': stDev, 'Temperature': 0}
+    
+    df2 = pd.DataFrame([sheet_dict])
 
-    print("Sheet" + str(sheet.index))
-    print (startTime, endTime, gain, mean, stDev)
+    data = data._append(df2, ignore_index = True)
+    
+display(data)
 
 #TODO: Iterate sheets function, convert find_cell to exact cell location and then plug into iterate sheet
 #TODO: continue until a graph of mean and temperature from the active data on meerstetter is achieved

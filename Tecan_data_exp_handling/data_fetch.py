@@ -23,7 +23,8 @@ def find_cell(value, range, sheet_number):
         if cell.row >= 100:
             print("No cells with " + value + " in " + range)
             break
-    return cell.row, cell.column
+    return wb.sheets[sheet_number].range((cell.row,cell.column)).get_address(False, False)
+
 
 
 #TODO: update this function to be able to break out of an infinite loop if there is one
