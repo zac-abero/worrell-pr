@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 def find_cell(value, range, sheet_number):
     wb = xw.books.active
     for cell in wb.sheets[sheet_number].range(range)[0:]:
-        if cell.value == value:
+        if value == cell.value:
             break
         if cell.row >= 100:
             print("No cells with " + value + " in " + range)

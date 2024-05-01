@@ -11,20 +11,29 @@ wb = xw.books.active
 #TODO: Create a dataframe that contains all critical information, StartTime, EndTime, Gain, Mean (Key, Value), StDev (Key, Value), Temperature (TEC .csv Import) 
 #TODO: Add try/catch loop or other timeout for Sheet1, See PEGTMP Meredith/Zac File
 
+num_sheets = 0
+
 for sheet in wb.sheets:
-    df = pd.DataFrame()
+    num_sheets += 1
     
+data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])
+
+for sheet in wb.sheets:    
     # Excel is 1-based 
-    sheet_number = sheet.index -1 
+    sheet_number = num_sheets - sheet.index
     
     startTime = find_cell("Start Time:", 'A:A', sheet_number)
     endTime = find_cell("End Time:", 'A:A', sheet_number)
     gain = find_cell("Gain", 'A:A',  sheet_number)
     mean = find_cell("Mean", 'B:B',  sheet_number)
     stDev = find_cell("StDev", 'C:C', sheet_number)
-    # temp = find_cell("Temperature", 'B:B', sheet.index)
+    # figure out nonetype comparison in temperature or use starttime/endtime to calculate temp from .csv data
+    # temp = find_cell("Temperature", 'B:B', sheet_number)
     
-    print("Sheet " + str(sheet.index))
+    # need to create a dict for multiple data rows for mean and stdev 
+        
+
+    print("Sheet" + str(sheet.index))
     print (startTime, endTime, gain, mean, stDev)
 
 #TODO: Iterate sheets function, convert find_cell to exact cell location and then plug into iterate sheet
