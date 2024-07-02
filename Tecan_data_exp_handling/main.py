@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_fetch import *
 
-#need a file to be able to run auto-downloads on all necessary libraries used
+# need a file to be able to run auto-downloads on all necessary libraries used
 
 # Fetching the active workbook (ideally the one booted by the Tecan i-control software)
 
