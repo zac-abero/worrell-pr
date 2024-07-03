@@ -6,6 +6,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from data_fetch import *
 
+# need a file to be able to run auto-downloads on all necessary libraries used
+
 # Fetching the active workbook (ideally the one booted by the Tecan i-control software)
 
 wb = xw.books.active
@@ -49,6 +51,15 @@ for sheet in wb.sheets:
     data = data._append(df2, ignore_index = True)
     
 display(data)
+
+    
+charted_data = data[["Gain", "Mean"]]
+
+plt.figure()
+
+charted_data.plot(x="Mean", y="Gain")
+
+plt.show()
 
 #TODO: Iterate sheets function, convert find_cell to exact cell location and then plug into iterate sheet
 #TODO: continue until a graph of mean and temperature from the active data on meerstetter is achieved
