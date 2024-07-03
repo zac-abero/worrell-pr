@@ -20,7 +20,7 @@ def find_cell(value, range, sheet_number):
     for cell in wb.sheets[sheet_number].range(range)[0:]:
         if value == cell.value:
             break
-        if cell.row >= 100:
+        if cell.row >= 200:
             print("No cells with " + value + " in " + range)
             break
     return wb.sheets[sheet_number].range((cell.row,cell.column)).get_address(False, False)

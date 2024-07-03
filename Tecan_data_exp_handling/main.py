@@ -39,8 +39,8 @@ for sheet in wb.sheets:
     startTime = sheet.range(startTime_position).offset(0,1).value
     endTime = sheet.range(endTime_position).offset(0,1).value
     gain = sheet.range(gain_position).offset(0,4).value
-    mean = sheet.range(mean_position).value
-    stDev = sheet.range(stDev_position).value
+    mean = sheet.range(mean_position).offset(1,0).end('down').value
+    stDev = sheet.range(stDev_position).offset(1,0).end('down').value
         
     sheet_dict = {'Sheet': sheet_number, 'StartTime': startTime, 'EndTime': endTime, 'Gain': gain, 'Mean': mean, 'StDev': stDev, 'Temperature': 0}
     
