@@ -51,20 +51,24 @@ for sheet in wb.sheets:
     
     #   fluoresence vs temperature in real time
         
+        # .offset(r,c)
     startTime = sheet.range(startTime_position).offset(0,1).value
     endTime = sheet.range(endTime_position).offset(0,1).value
     gain = sheet.range(gain_position).offset(0,4).value
     mean = sheet.range(mean_position).offset(1,0).end('down').value
     stDev = sheet.range(stDev_position).offset(1,0).end('down').value
     
+    print("From Sheet direct Start time: " + startTime + "End time: " + endTime)
+
+    
     # find temperature from csv data
-    startTime = pd.to_datetime(startTime)
-    endTime = pd.to_datetime(endTime)
-    print(startTime, endTime)
+    start_dt = pd.to_datetime(startTime)
+    end_dt = pd.to_datetime(endTime)
+    print("Start time: " + start_dt + "End time: " + end_dt)
     
     csv_df['Time'] = pd.to_datetime(csv_df['Time'])
     
-    sheet_temperature_df = csv_df.between_time(startTime, endTime)
+    sheet_temperature_df = csv_df.between_time(start_dt, end_dt)
     
     print(sheet_temperature_df.head())
         
