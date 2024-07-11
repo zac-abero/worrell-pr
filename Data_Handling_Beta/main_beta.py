@@ -25,14 +25,15 @@ print(csv + " successfully loaded")
 csv_df = pd.read_csv(csv, sep=';')
 csv_df.info() 
 
-#TODO: Create a dataframe that contains all critical information, StartTime, EndTime, Gain, Mean (Key, Value), StDev (Key, Value), Temperature (TEC .csv Import) 
 #TODO: Add try/catch loop or other timeout for Sheet1, See PEGTMP Meredith/Zac File
 
+# Counter for sheet index
 num_sheets = 0
 
 for sheet in wb.sheets:
     num_sheets += 1
-    
+
+# Establishing base dataframe for all read-in data
 data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])
 
 for sheet in wb.sheets:
@@ -44,33 +45,30 @@ for sheet in wb.sheets:
     gain_position = find_cell("Gain", 'A:A',  sheet_number)
     mean_position = find_cell("Mean", 'B:B',  sheet_number)
     stDev_position = find_cell("StDev", 'C:C', sheet_number)
-    # figure out nonetype comparison in temperature or use starttime/endtime to calculate temp from .csv data
-    ## temp = find_cell("Temperature", 'B:B', sheet_number)
     
-    # need to create a dict for multiple data rows for mean and stdev and then append to the dataframe
+    print(startTime_position, endTime_position, gain_position, mean_position, stDev_position)
     
-    #   fluoresence vs temperature in real time
-        
-        # .offset(r,c)
+    # If the cell is found, then we can extract the data, otherwise skip
+    if startTime_position is None:   
+        continue
+    
+    # .offset(r,c)
     startTime = sheet.range(startTime_position).offset(0,1).value
     endTime = sheet.range(endTime_position).offset(0,1).value
     gain = sheet.range(gain_position).offset(0,4).value
     mean = sheet.range(mean_position).offset(1,0).end('down').value
     stDev = sheet.range(stDev_position).offset(1,0).end('down').value
     
-    print("From Sheet direct Start time: " + startTime + "End time: " + endTime)
-
+    print(startTime, endTime)
     
-    # find temperature from csv data
     start_dt = pd.to_datetime(startTime)
     end_dt = pd.to_datetime(endTime)
-    print("Start time: " + start_dt + "End time: " + end_dt)
     
     csv_df['Time'] = pd.to_datetime(csv_df['Time'])
-    
-    sheet_temperature_df = csv_df.between_time(start_dt, end_dt)
-    
-    print(sheet_temperature_df.head())
+            
+    temp_df = csv_df.loc[(csv_df['Time'] >= start_dt) & (csv_df['Time'] <= end_dt)]
+    print(start_dt, end_dt)
+    print(temp_df.head())
         
     sheet_dict = {'Sheet': sheet_number, 'StartTime': startTime, 'EndTime': endTime, 'Gain': gain, 'Mean': mean, 'StDev': stDev, 'Temperature': 0}
     
@@ -84,7 +82,7 @@ charted_data = data[["Gain", "Mean"]]
 
 plt.figure()
 
-charted_data.plot(x="Mean Fluorescence Intensity", y="Temperature")
+charted_data.plot(x="Mean", y="Gain")
 
 plt.show()
 
