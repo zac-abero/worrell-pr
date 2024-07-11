@@ -5,11 +5,15 @@ import tkinter
 class automate_GUI: 
         
     def __init__(self) -> None:
-        self.final_mouse_x = 0
-        self.final_mouse_y = 0
+        self.start_button_x = 0
+        self.start_button_y = 0
+        
+        self.icontrol_button_x = 0
+        self.icontrol_button_y = 0
+        
         self.user_confirmed = False
         
-    def getButtonLocation(self, timeToWait):
+    def getButtonLocation(self, timeToWait, buttonType):
         while not self.user_confirmed:
             
             # Give yourself a few seconds to navigate to the screen where the button is
@@ -18,36 +22,32 @@ class automate_GUI:
             # Get the current position of the mouse (use this to find the button position)
             current_mouse_x, current_mouse_y = pyautogui.position()
             print(f"Current mouse position: {current_mouse_x}, {current_mouse_y}")
-            self.popUpComfirmation(current_mouse_x, current_mouse_y)
+            self.popUpComfirmation(current_mouse_x, current_mouse_y, buttonType)
 
-    """
-    def getButtonLocation(self, timeToWait):
-        # Give yourself a few seconds to navigate to the screen where the button is
-        time.sleep(timeToWait)
-
-        # Get the current position of the mouse (use this to find the button position)
-        current_mouse_x, current_mouse_y = pyautogui.position()
-        print(f"Current mouse position: {current_mouse_x}, {current_mouse_y}")
-        automate_GUI.popUpComfirmation(self, current_mouse_x, current_mouse_y)
-    """
     
     # Function to continue and close the window
-    def on_continue(self, window,  current_mouse_x,  current_mouse_y ):
-        self.final_mouse_x = current_mouse_x
-        self.final_mouse_y = current_mouse_y
-        self.user_confirmed = True
-        window.destroy()
+    def on_continue(self, window, current_mouse_x, current_mouse_y, buttonType):
+        if buttonType == "start":
+            self.start_button_x = current_mouse_x
+            self.start_button_y = current_mouse_y
+            self.user_confirmed = True
+            window.destroy()
+        else:
+            self.icontrol_button_x = current_mouse_x
+            self.icontrol_button_y = current_mouse_y
+            self.user_confirmed = True
+            window.destroy() 
 
         
         # Function to rerun and close the window
-    def on_rerun(self, window):
+    def on_rerun(self, window, buttonType):
         window.destroy()
-        automate_GUI.getButtonLocation(self, 5)
+        automate_GUI.getButtonLocation(self, 5, buttonType)
            
-    def popUpComfirmation(self, current_mouse_x, current_mouse_y):
+    def popUpComfirmation(self, current_mouse_x, current_mouse_y, buttonType):
         # Create a window
         window =tkinter.Tk()
-        window.title("Confirmation")
+        window.title(buttonType + "Button Confirmation")
         
         #set window size
         window.geometry("350x100")
@@ -57,19 +57,23 @@ class automate_GUI:
         label.pack(pady=10)
         
         #continue button
-        continue_button = tkinter.Button(window, text="Continue", command=lambda: self.on_continue(window, current_mouse_x, current_mouse_y))
+        continue_button = tkinter.Button(window, text="Continue", command=lambda: self.on_continue(window, current_mouse_x, current_mouse_y, buttonType))
         continue_button.pack(side=tkinter.LEFT, padx=(10, 50), pady=10)
         
         #rerun button
-        rerun_button = tkinter.Button(window, text="Rerun", command=lambda: self.on_rerun(window))
+        rerun_button = tkinter.Button(window, text="Rerun", command=lambda: self.on_rerun(window, buttonType))
         rerun_button.pack(side=tkinter.RIGHT, padx=(10, 50), pady=10)
         
         window.mainloop()
         
-    def clickButton(self):
+    def clickButton(self, buttonType):
     
         # Move the mouse to the button and click
-        pyautogui.moveTo(self.final_mouse_x, self.final_mouse_y)
-        pyautogui.click()
+        if buttonType == "start":
+            pyautogui.moveTo(self.start_button_x, self.start_button_y)
+            pyautogui.click()
+        else:
+            pyautogui.moveTo(self.icontrol_button_x, self.icontrol_button_y)
+            pyautogui.click()
 
-        print("Run button clicked")
+        print(buttonType+" button clicked")

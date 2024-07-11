@@ -144,17 +144,18 @@ class MeerstetterTEC(object):
         """
         
         current_temp = self.get_temp()
-        current_temp = float(current_temp)  #cast to a float
+        current_temp = float(current_temp)  
         target_temp = float(target_temp) 
         hold_rate= 10 + (numberOfWells*10) + 10
         autoGUI = automate_GUI()
-        autoGUI.getButtonLocation(10)
-        x, y = autoGUI.final_mouse_x, autoGUI.final_mouse_y
-        self.enable()
         
-        print(x, y)
+        #get start button location
+        autoGUI.getButtonLocation(10, "start")
         
+        #get icontrol button location
+        autoGUI.getButtonLocation(10, "icontrol")
         
+        self.enable()        
         
         #ramp to the initial starting temperature 
         self.set_temp(starting_temp) 
@@ -169,15 +170,14 @@ class MeerstetterTEC(object):
         #initial scan at starting temp
         print("allowing temp to stablize (holding temp for 1 min before scanning)")
         time.sleep(60)
-        print(x,y)
-        autoGUI.clickButton()
+        autoGUI.clickButton("start")
         print("holding " + str(current_temp))
         time.sleep(hold_rate) 
         print("starting temp is " + str(current_temp))
+        #reopen icontrol
+        autoGUI.clickButton("icontrol")
         
         rampTo = current_temp
-        timeTotal = 0.0
-        numberOfRamps = 0.0
         
         
         #loop to decrese the temp:
@@ -190,11 +190,8 @@ class MeerstetterTEC(object):
                 rampTo = rampTo - ramp_rate if rampTo - ramp_rate >= target_temp else target_temp
                 print("ramping to: " + str(rampTo))
                 self.set_temp(rampTo)
-                
-                numberOfRamps += 1.0
-                start_time = time.time()
-                
-                
+                                
+        
                 while True: 
                     if globals.kill_button_pressed == True:
                         break
@@ -208,10 +205,11 @@ class MeerstetterTEC(object):
                 
                 print("allowing temp to stablize (holding temp for 1 min before scanning)")
                 time.sleep(60)
-                print(x,y)
-                autoGUI.clickButton()
+                autoGUI.clickButton("start")
                 print("holding " + str(current_temp))
-                time.sleep(hold_rate)
+                time.sleep(hold_rate) #reopen icontrol
+                autoGUI.clickButton("icontrol")
+                
 
             print("temp ramp is complete")
 
@@ -241,10 +239,11 @@ class MeerstetterTEC(object):
                 
                 print("allowing temp to stablize")
                 time.sleep(60)
-                print(x,y)
-                autoGUI.clickButton()
+                autoGUI.clickButton("start")
                 print("holding and scanning @ " + str(current_temp))
                 time.sleep(hold_rate)
+                #reopen icontrol
+                autoGUI.clickButton("icontrol")
         
         if globals.kill_button_pressed == True:
             pass
@@ -252,33 +251,11 @@ class MeerstetterTEC(object):
             #last scan at target temperature
             print("allowing temp to stablize (holding temp for 1 min before scanning)")
             time.sleep(60)
-            print(x,y)
-            autoGUI.clickButton()
+            autoGUI.clickButton("start")
             print("holding " + str(current_temp))
             time.sleep(hold_rate) 
             
-            """
-            #this is code to ramp temperature back down to 20 degrees, then switch static on back off
-            print('begining ramp down')
-            target_temp = 20
-            while abs(current_temp - target_temp) > 0.01:  # using a tolerance of 0.01
-                
-                rampTo = rampTo + ramp_rate if rampTo + ramp_rate <= target_temp else target_temp
-                print("ramping to: " + str(rampTo))
-                print(self.set_temp(rampTo))
-                                                    
-                while True: 
-                    time.sleep(1)
-                    current_temp = self.get_temp()
-                    current_temp = float(current_temp)  #cast to a float
-                    print("currentTemp is: " + str(current_temp))
-                    if abs(current_temp - rampTo) < 0.01:
-                        time.sleep(15)
-                        break
-            time.sleep(15)
-            """ 
-            
-            self.disable() #so as to not ramp temp next time you turn the TEC on 
+            self.disable() #to not ramp temp next time you turn the TEC on 
                 
 
     def _set_enable(self, enable=True):
