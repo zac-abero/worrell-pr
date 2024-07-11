@@ -27,13 +27,8 @@ def find_cell(value, range, sheet_number):
 
 #TODO: update this function to be able to break out of an infinite loop if there is one
 
+# update code to just input a dataframe then loc on dataframe directly to see if the values inputted are there
+
 # def find_cell(value, range, sheet_number):
 #     wb = xw.books.active
-#     try:
-#         for cell in wb.sheets[sheet_number].range(range)[0:]:
-#             if cell.value == value:
-#                 break
-#     except:
-#             if cell.row > 100:
-#                 print("Value is out of range, skipping")
-#     return cell.row, cell.column
+#     wb.sheets[sheet_number]
