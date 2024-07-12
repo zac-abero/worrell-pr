@@ -23,10 +23,35 @@ print(csv + " successfully loaded")
 
 # Load comma separated values file from selection with separator as ';'
 csv_df = pd.read_csv(csv, sep=';')
-csv_df.info() 
+csv_df.info()
 
 # Establishing base dataframe for all read-in data
 data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])
 
-for sheet in book:   
-    print(sheet)
+# Workbook stores sheets in nth to 1 order so we iterate through them with reveresed()
+for sheet in reversed(book):   
+    
+    # Prune workbook for empty sheets; i-control likes to create null sheets
+    if book[sheet].empty: continue
+    
+    start_time = book[sheet].loc
+    print(start_time)
+    
+    
+    
+    # # Excel is 1-based 
+    # sheet_number = len(book) - int(sheet)
+    
+    # # Find the cell position of the following strings
+    # startTime_position = find_cell("Start Time:", 'A:A', sheet_number)
+    # endTime_position = find_cell("End Time:", 'A:A', sheet_number)
+    # gain_position = find_cell("Gain", 'A:A',  sheet_number)
+    # mean_position = find_cell("Mean", 'B:B',  sheet_number)
+    # stDev_position = find_cell("StDev", 'C:C', sheet_number)
+    
+    # # .offset(r,c)
+    # startTime = sheet.range(startTime_position).offset(0,1).value
+    # endTime = sheet.range(endTime_position).offset(0,1).value
+    # gain = sheet.range(gain_position).offset(0,4).value
+    # mean = sheet.range(mean_position).offset(1,0).end('down').value
+    # stDev = sheet.range(stDev_position).offset(1,0).end('down').value
