@@ -75,14 +75,14 @@ def startRamp():
 
 
 def showInfo(buttonClicked):
-    if buttonClicked == "Starting Temperature":
-        messagebox.showinfo("Info", "beepboopboobee.")
-    if buttonClicked == "Target Temperature":
-        messagebox.showinfo("Info", "boop.")
-    if buttonClicked == "Ramp Rate":
-        messagebox.showinfo("Info", "beep.")
+    if buttonClicked == "Begin Temperature":
+        messagebox.showinfo("Info", "This is the initial temperature you'd like to begin with in the experiment.")
+    if buttonClicked == "End Temperature":
+        messagebox.showinfo("Info", "This is the final temperature you'd like to achieve in the experiment.")
+    if buttonClicked == "Ramp Increment":
+        messagebox.showinfo("Info", "This is the amount that each temperature ramps by")
     if buttonClicked == "Number of Wells":
-        messagebox.showinfo("Info", "beepbeep.")
+        messagebox.showinfo("Info", "This dictates how long the settle/pause time for a scan is. More Wells = More Time")
     
 
 

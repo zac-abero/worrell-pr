@@ -27,8 +27,6 @@ def find_cell(value, range, sheet_number):
 
 #TODO: update this function to be able to break out of an infinite loop if there is one
 
-# update code to just input a dataframe then loc on dataframe directly to see if the values inputted are there
-
-# def find_cell(value, range, sheet_number):
-#     wb = xw.books.active
-#     wb.sheets[sheet_number]
+# Pandas Version, a mask of the large .where pandas dataframe function
+def find_cell(name, sheet_number):
+    return sheet_number.where(sheet_number==name).dropna(how='all').dropna(axis=1)
