@@ -39,16 +39,27 @@ for sheet in reversed(book):
     spreadsheet = book[sheet]
     
     # Find all important named cell locations in the sheet
-    start_time = find_cell("Start Time:", spreadsheet)
-    end_time = find_cell("End Time:", spreadsheet) 
+    mode = find_cell("Mode", spreadsheet)
     gain = find_cell("Gain", spreadsheet)
     well = find_cell("Well", spreadsheet)
+    start_time = find_cell("Start Time:", spreadsheet)
+    end_time = find_cell("End Time:", spreadsheet) 
+    
+    value_list = [mode, gain, well, start_time, end_time]
+    
+    df1 = []
+    
+    for value in value_list:
+        df1.append(spreadsheet.loc[value.index].dropna(axis=1))
     
     # How to find a cell
     # print(spreadsheet.loc[well.index, well.columns])
     
     # Create two dataframes
     # 1st dataframe is row delineated data such as start time, end time
+
+    print(df1.head())
+    
     # 2nd dataframe will be the wells charted data with wells, mean, stdev
     
     
