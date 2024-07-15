@@ -29,4 +29,4 @@ def find_cell(value, range, sheet_number):
 
 # Pandas Version, a mask of the large .where pandas dataframe function
 def find_cell(name, sheet_number):
-    return sheet_number.where(sheet_number==name).dropna(how='all').dropna(axis=1)
+    return sheet_number.where(sheet_number==name).dropna(axis=0, how='all')

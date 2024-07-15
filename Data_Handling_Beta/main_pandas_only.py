@@ -27,7 +27,7 @@ csv_df = pd.read_csv(csv, sep=';')
 csv_df.info()
 
 # Establishing base dataframe for all read-in data
-data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])
+data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
 
 # Workbook stores sheets in nth to 1 order so we iterate through them with reveresed()
 for sheet in reversed(book):   
@@ -38,28 +38,56 @@ for sheet in reversed(book):
     # Renaming workbook to not reference
     spreadsheet = book[sheet]
     
-    # Find all important named cell locations in the sheet
-    mode = find_cell("Mode", spreadsheet)
-    gain = find_cell("Gain", spreadsheet)
-    well = find_cell("Well", spreadsheet)
-    start_time = find_cell("Start Time:", spreadsheet)
-    end_time = find_cell("End Time:", spreadsheet) 
-    
-    value_list = [mode, gain, well, start_time, end_time]
-    
-    df1 = []
-    
-    for value in value_list:
-        df1.append(spreadsheet.loc[value.index].dropna(axis=1))
-    
-    # How to find a cell
-    # print(spreadsheet.loc[well.index, well.columns])
-    
     # Create two dataframes
     # 1st dataframe is row delineated data such as start time, end time
+    
+    mode = find_cell("Mode", spreadsheet)
+    gain = find_cell("Gain", spreadsheet)
+    start_time = find_cell("Start Time:", spreadsheet)
+    end_time = find_cell("End Time:", spreadsheet)     
+    
+    # List for all important named cell locations in the sheet
+    value_list = [mode, gain, start_time, end_time]
+    
+    setup_df = pd.DataFrame()
+    
+    # This loop concatenates all the cell data
+    for value in value_list:
+        df2 = spreadsheet.loc[value.index].dropna(axis='columns', how='any')
+        setup_df = pd.concat([setup_df, df2], axis=0)
+    
+    # Transpose and Correct Dataframe Labels
+    setup_df = setup_df.T
+    new_header = setup_df.iloc[0] #grab the first row for the header
+    setup_df = setup_df[1:] #take the data less the header row
+    setup_df.columns = new_header #set the header row as the df header
+        
+    # Print Dataframe
+    print(setup_df.head())
+    
+    start_time_value = setup_df["Start Time:"][setup_df["Start Time:"].first_valid_index()]
+    print(start_time_value)
+    
+    end_time_value = setup_df["End Time:"][setup_df["End Time:"].first_valid_index()]
+    print(end_time_value)
+    
+    start_time_value = pd.to_datetime(start_time_value)    
+    end_time_value = pd.to_datetime(end_time_value)    
 
-    print(df1.head())
+    csv_df['Time'] = pd.to_datetime(csv_df['Time'])
+            
+    temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
+    print(temp_df.head())
     
     # 2nd dataframe will be the wells charted data with wells, mean, stdev
+    
+    well = find_cell("Well", spreadsheet)
+
+    # Creating a dataframe for the table data in the excel sheet
+    table_df = pd.DataFrame()
+    
+    # Selecting from the index of the "Well" cell until the end of the values attached to that table. Dropping all rows with invalid data.
+    table_df = spreadsheet.iloc[well.index.item():-1].dropna(axis=0, how='any')
+    #print(table_df.head(10))
     
     
