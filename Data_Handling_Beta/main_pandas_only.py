@@ -65,14 +65,14 @@ for sheet in reversed(book):
     # Print Dataframe
     print(setup_df.head())
     
-    start_time_value = setup_df["Start Time:"][setup_df["Start Time:"].first_valid_index()]
+    start_time_value = setup_df['Start Time:'][setup_df["Start Time:"].first_valid_index()]
     print(start_time_value)
     
-    end_time_value = setup_df["End Time:"][setup_df["End Time:"].first_valid_index()]
-    print(end_time_value)
+    #end_time_value = setup_df['End Time:'][setup_df["End Time:"].first_valid_index()]
+    #print(end_time_value)
     
     start_time_value = pd.to_datetime(start_time_value)    
-    end_time_value = pd.to_datetime(end_time_value)    
+    #end_time_value = pd.to_datetime(end_time_value)    
 
     csv_df['Time'] = pd.to_datetime(csv_df['Time'])
             
