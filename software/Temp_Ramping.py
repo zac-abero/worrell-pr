@@ -10,6 +10,9 @@ from navigateToThenTrigger import automate_GUI
 import time
 import threading
 import globals
+import datetime
+import csv
+import globals
 
 #import matplotlib.pyplot as plt
 #import matplotlib.animation as animation
@@ -24,8 +27,22 @@ DEFAULT_QUERIES = [
     "output voltage"
 ]
 
+NEW_QUERIES= [
+    "CH1ob",
+    "Ch1sink",
+    "Ch1targ"
+] 
+
 # syntax
 # { display_name: [parameter_id, unit], }
+
+
+NEW_COMMANDS = {
+    "object temperature": [1000, "degC"],
+    "target object temperature": [1010, "degC"],
+    "sink temperature": [1001, "degC"],    
+}
+
 COMMAND_TABLE = {
     "loop status": [1200, ""],
     "object temperature": [1000, "degC"],
@@ -46,7 +63,7 @@ class MeerstetterTEC(object):
     def _tearDown(self):
         self.session().stop()
 
-    def __init__(self, port=None, scan_timeout=30, channel=1, queries=DEFAULT_QUERIES, *args, **kwars):
+    def __init__(self, port=None, scan_timeout=30, channel=1, queries=NEW_QUERIES, *args, **kwars):
         assert channel in (1, 2)
         self.channel = channel
         self.port = port
@@ -91,20 +108,25 @@ class MeerstetterTEC(object):
         return self._session
 
     def get_data(self):
-        data = {}
+        data = []
+        
+        #get current time and append it first
+        current_time = datetime.datetime.now()  # Get the current time
+        formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")  # Format the time as a string
+        data.append(formatted_time)
         
         for description in self.queries:
-            id, unit = COMMAND_TABLE[description]
+            id, unit = NEW_COMMANDS[description]
             try:
                 value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
-                data.update({description: (value, unit)})
+                data.append(value)
             except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
                 self._session = None
         return data
     
     def get_temp(self) -> float:
-        id = COMMAND_TABLE["object temperature"][0]
+        id = 1000
         try:
             value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
         except (ResponseException, WrongChecksum) as ex:
@@ -126,7 +148,17 @@ class MeerstetterTEC(object):
         logging.info("set object temperature for channel {} to {} C".format(self.channel, value))
         return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel)
 
-
+    def writeToCSV(self):
+        field_names = ["Time","CH1ob","Ch1sink","Ch1targ"]
+        
+        while globals.kill_button_pressed != True:
+            with open('output.csv', 'w', newline='') as file:
+                data = self.get_data()
+                writer = csv.DictWriter(file, fieldnames=field_names)
+                writer.writeheader()
+                writer.writerow(data)
+                
+    
     def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
         """
         Ramp the temperature to the target temperature with a specified ramp rate and hold rate.
@@ -148,6 +180,9 @@ class MeerstetterTEC(object):
         target_temp = float(target_temp) 
         hold_rate= 10 + (numberOfWells*10) + 10
         autoGUI = automate_GUI()
+        
+        csv_thread = threading.Thread(target=self.writeToCSV)
+        csv_thread.start()
         
         #get start button location
         autoGUI.getButtonLocation(10, "start")
