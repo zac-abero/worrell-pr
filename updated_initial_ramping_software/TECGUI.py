@@ -131,20 +131,6 @@ tk.Button(button_frame, text="Kill Ramp", command=killRampAtRoot).pack(side=tk.L
 frame.columnconfigure(0, weight=1)
 
 
-""" 
-tk.Button(frame, text="Start Ramp", command=startRamp).grid(row=31, column=0, pady=(10, 0))
-
-#TODO
-#add pause ramp button
-tk.Button(frame, text="Pause Ramp", command=pauseRamp).grid(row= 31, column=1, pady= (10,0))
-
-
-#TODO 
-#add kill ramp button
-tk.Button(frame, text="Kill Ramp", command=killRampAtRoot).grid(row= 31, column=2, pady= (10,0))
-"""
-
-
 updateCurrentTemp()
 
 root.mainloop()

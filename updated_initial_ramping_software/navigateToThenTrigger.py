@@ -9,27 +9,23 @@ class automate_GUI:
         self.final_mouse_y = 0
         self.user_confirmed = False
         
+    #function that triggers the tecan to scan
+    def scan(self, current_temp, hold_rate):
+        print("allowing temp to stablize (holding temp for 1 min before scanning)")
+        time.sleep(60)
+        self.clickButton()
+        print("holding & scanning @ " + str(current_temp))
+        time.sleep(hold_rate)    
+    
     def getButtonLocation(self, timeToWait):
         while not self.user_confirmed:
             
             # Give yourself a few seconds to navigate to the screen where the button is
             time.sleep(timeToWait)
-
             # Get the current position of the mouse (use this to find the button position)
             current_mouse_x, current_mouse_y = pyautogui.position()
             print(f"Current mouse position: {current_mouse_x}, {current_mouse_y}")
             self.popUpComfirmation(current_mouse_x, current_mouse_y)
-
-    """
-    def getButtonLocation(self, timeToWait):
-        # Give yourself a few seconds to navigate to the screen where the button is
-        time.sleep(timeToWait)
-
-        # Get the current position of the mouse (use this to find the button position)
-        current_mouse_x, current_mouse_y = pyautogui.position()
-        print(f"Current mouse position: {current_mouse_x}, {current_mouse_y}")
-        automate_GUI.popUpComfirmation(self, current_mouse_x, current_mouse_y)
-    """
     
     # Function to continue and close the window
     def on_continue(self, window,  current_mouse_x,  current_mouse_y ):
@@ -39,11 +35,11 @@ class automate_GUI:
         window.destroy()
 
         
-        # Function to rerun and close the window
+    # Function to rerun and close the window
     def on_rerun(self, window):
         window.destroy()
         automate_GUI.getButtonLocation(self, 5)
-           
+
     def popUpComfirmation(self, current_mouse_x, current_mouse_y):
         # Create a window
         window =tkinter.Tk()
