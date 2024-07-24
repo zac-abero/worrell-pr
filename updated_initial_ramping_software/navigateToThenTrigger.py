@@ -2,6 +2,12 @@ import pyautogui
 import time
 import tkinter
 
+"""
+This file contains the automate_GUI class which is used to automate the GUI of the Tecan software. 
+It finds the location of the button that triggers the Tecan to scan and clicks it, so 
+we can trigger the tecan to scan at the correct temperature intervals.
+"""
+
 class automate_GUI: 
         
     def __init__(self) -> None:

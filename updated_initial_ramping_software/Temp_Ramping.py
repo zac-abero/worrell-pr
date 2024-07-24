@@ -1,6 +1,8 @@
 """
-
+This module provides a class for controlling Meerstetter TEC devices via serial.
+It is based on the MeCom protocol. It controls the temperature ramping of the TEC. 
 """
+
 import logging
 import platform
 from mecom import MeComSerial, ResponseException, WrongChecksum
@@ -131,6 +133,7 @@ class MeerstetterTEC(object):
 
 
     def ramp_up_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
+        current_temp = self.get_temp()
         while abs(current_temp - target_temp) > 0.01:  # using a tolerance of 0.01
                 
                 if globals.kill_button_pressed == True:
@@ -155,6 +158,7 @@ class MeerstetterTEC(object):
         
 
     def ramp_down_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
+        current_temp = self.get_temp()
         while abs(current_temp - target_temp) > 0.01: # using a tolerance of 0.01
                 
                 if globals.kill_button_pressed == True:
@@ -192,7 +196,6 @@ class MeerstetterTEC(object):
         None
         """
         
-        current_temp = self.get_temp()
         target_temp = float(target_temp) 
     
         hold_rate= 10 + (numberOfWells*10) + 10
@@ -208,6 +211,7 @@ class MeerstetterTEC(object):
             self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
         
         #initial scan at starting temp
+        current_temp = self.get_temp()
         autoGUI.scan(current_temp, hold_rate) 
         print("starting temp is " + str(current_temp))
         

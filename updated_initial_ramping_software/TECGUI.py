@@ -5,6 +5,11 @@ import logging
 import globals
 #import temperatureGraph
 
+"""
+This file contains a basic GUI for the temperature ramping software in the file Temp_Ramping.py.
+It allows the user to input the starting temperature, target temperature, ramp rate, and number of wells.
+"""
+
 # initialize controller
 tec = MeerstetterTEC()
 ramp_parameters = []
