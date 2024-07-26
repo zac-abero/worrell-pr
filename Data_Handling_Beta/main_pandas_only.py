@@ -97,7 +97,7 @@ for sheet in reversed(book):
     table_df.columns = new_header2 #set the header row as the df header
     print(table_df.head(10))
     
-    mean = table_df.loc[table_df['Well'] == 'B1']['Mean'].values[0] # pairing on well type
+    mean = table_df.loc[table_df['Well'] == 'C1']['Mean'].values[0] # pairing on well type
     
     sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean}
     
