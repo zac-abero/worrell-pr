@@ -71,6 +71,5 @@ class automate_GUI:
         # Move the mouse to the button and click
         pyautogui.moveTo(self.final_mouse_x, self.final_mouse_y)
         pyautogui.click()
-        pyautogui.click()
 
         print("Run button clicked")
