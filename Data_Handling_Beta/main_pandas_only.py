@@ -44,10 +44,10 @@ for sheet in reversed(book):
     mode = find_cell("Mode", spreadsheet)
     gain = find_cell("Gain", spreadsheet)
     start_time = find_cell("Start Time:", spreadsheet)
-    end_time = find_cell("End Time:", spreadsheet)     
+    #end_time = find_cell("End Time:", spreadsheet)     
     
     # List for all important named cell locations in the sheet
-    value_list = [mode, gain, start_time, end_time]
+    value_list = [mode, gain, start_time]
     
     setup_df = pd.DataFrame()
     
@@ -66,6 +66,8 @@ for sheet in reversed(book):
     print(setup_df.head())
     
     start_time_value = setup_df['Start Time:'][setup_df["Start Time:"].first_valid_index()]
+    gain = setup_df['Gain'][setup_df["Gain"].first_valid_index()]
+
     print(start_time_value)
     
     #end_time_value = setup_df['End Time:'][setup_df["End Time:"].first_valid_index()]
@@ -79,6 +81,8 @@ for sheet in reversed(book):
     temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
     print(temp_df.head())
     
+    temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
+    
     # 2nd dataframe will be the wells charted data with wells, mean, stdev
     
     well = find_cell("Well", spreadsheet)
@@ -88,6 +92,26 @@ for sheet in reversed(book):
     
     # Selecting from the index of the "Well" cell until the end of the values attached to that table. Dropping all rows with invalid data.
     table_df = spreadsheet.iloc[well.index.item():-1].dropna(axis=0, how='any')
-    #print(table_df.head(10))
+    new_header2 = table_df.iloc[0] #grab the first row for the header
+    table_df = table_df[1:] #take the data less the header row
+    table_df.columns = new_header2 #set the header row as the df header
+    print(table_df.head(10))
+    
+    mean = table_df.loc[table_df['Well'] == 'B1']['Mean'].values[0] # pairing on well type
+    
+    sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean}
+    
+    df2 = pd.DataFrame([sheet_dict])
+
+    data = data._append(df2, ignore_index = True)
     
     
+display(data)
+
+charted_data = data[["Temperature", "Mean"]].apply(pd.to_numeric, errors = 'coerce') # converts to numeric, leaves "INVALIDs" as NaN
+print(charted_data.head())
+plt.figure()
+
+charted_data.plot(x="Temperature", y="Mean")
+
+plt.show()
