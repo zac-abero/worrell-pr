@@ -15,7 +15,7 @@ from openpyxl import *
 # Establishing base dataframe for all read-in data to be placed into
 data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
 # Cell to investigate
-cell = "B1"
+cell = "A3"
 
 # Open a selection screen for what sheet to run this function on
 

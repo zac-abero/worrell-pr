@@ -133,7 +133,9 @@ class MeerstetterTEC(object):
 
 
     def ramp_up_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
+
         current_temp = self.get_temp()
+        rampTo = current_temp
         while abs(current_temp - target_temp) > 0.01:  # using a tolerance of 0.01
                 
                 if globals.kill_button_pressed == True:
@@ -155,10 +157,13 @@ class MeerstetterTEC(object):
                 
                 if scan == True:
                     autoGUI.scan(current_temp, hold_rate)
+                else:
+                    time.sleep(15)
         
 
     def ramp_down_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
         current_temp = self.get_temp()
+        rampTo = current_temp
         while abs(current_temp - target_temp) > 0.01: # using a tolerance of 0.01
                 
                 if globals.kill_button_pressed == True:
@@ -179,6 +184,8 @@ class MeerstetterTEC(object):
                 
                 if scan == True:
                     autoGUI.scan(current_temp, hold_rate)
+                else:
+                    time.sleep(15)
 
 
     def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
@@ -196,18 +203,19 @@ class MeerstetterTEC(object):
         None
         """
         
-        target_temp = float(target_temp) 
     
         hold_rate= 10 + (numberOfWells*10) + 10
         
         autoGUI = automate_GUI()
         autoGUI.getButtonLocation(10)
         self.enable()
-                
-        #ramp to the initial starting temperature 
-        if starting_temp< self.get_temp():
+        current_temp = self.get_temp()
+        #ramp to the initial starting temperature
+        if starting_temp < current_temp:
+            target_temp = starting_temp
             self.ramp_down_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
         else:
+            target_temp = starting_temp
             self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
         
         #initial scan at starting temp
