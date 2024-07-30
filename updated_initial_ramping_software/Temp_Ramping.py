@@ -203,7 +203,6 @@ class MeerstetterTEC(object):
         None
         """
         
-    
         hold_rate= 10 + (numberOfWells*10) + 10
         
         autoGUI = automate_GUI()
