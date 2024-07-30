@@ -4,30 +4,35 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import csv
+import tkinter as tk 
+
 from data_fetch import *
-from tkinter import Tk     # from tkinter import Tk for Python 3.x
 from tkinter.filedialog import askopenfilename
 from openpyxl import *
 
+# Variables
+
+# Establishing base dataframe for all read-in data to be placed into
+data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
+# Cell to investigate
+cell = "B1"
+
 # Open a selection screen for what sheet to run this function on
 
-Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing
+tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing
 workbook = askopenfilename() # show an "Open" dialog box and return the path to the selected file
 print(workbook + " successfully loaded")
 
 # Load excel workbook from selection
 book = pd.read_excel(workbook, None, header=None)
 
-Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing
+tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing
 csv = askopenfilename() # show an "Open" dialog box and return the path to the selected file
 print(csv + " successfully loaded")
 
 # Load comma separated values file from selection with separator as ';'
 csv_df = pd.read_csv(csv, sep=';')
 csv_df.info()
-
-# Establishing base dataframe for all read-in data
-data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
 
 # Workbook stores sheets in nth to 1 order so we iterate through them with reveresed()
 for sheet in reversed(book):   
@@ -97,9 +102,11 @@ for sheet in reversed(book):
     table_df.columns = new_header2 #set the header row as the df header
     print(table_df.head(10))
     
-    mean = table_df.loc[table_df['Well'] == 'C1']['Mean'].values[0] # pairing on well type
+    mean = table_df.loc[table_df['Well'] == cell]['Mean'].values[0] # pairing on well type
+    st_dev = table_df.loc[table_df['Well'] == cell]['StDev'].values[0] # pairing on well type
+
     
-    sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean}
+    sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
     
     df2 = pd.DataFrame([sheet_dict])
 
