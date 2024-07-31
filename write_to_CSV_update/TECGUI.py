@@ -108,7 +108,7 @@ tk.Button(frame, text="Starting Temperature (℃)", command=lambda: showInfo("Be
 starting_temp_entry = tk.Entry(frame, bg="lightblue")
 starting_temp_entry.grid(row=3, column=0)
 
-tk.Button(frame, text="Target Temperature (℃)", command=lambda: showInfo("End Temperature")).grid(row=4, pady=(20,5))
+tk.Button(frame, text="End Temperature (℃)", command=lambda: showInfo("End Temperature")).grid(row=4, pady=(20,5))
 #tk.Label(frame, text="Target Temperature (℃)", bg="lightgray").grid(row=4, pady=(20,5))
 target_temp_entry = tk.Entry(frame, bg="lightblue")
 target_temp_entry.grid(row=5, column=0)
