@@ -175,10 +175,13 @@ class MeerstetterTEC(object):
         None
         """
         
-        field_names = ["time", "object temperature", "output current", "output voltage"]
-            
-        with open('TEC_temperature_output.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
+        field_names = ["Time", "CH 1 Object Temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
+        
+        current_time = datetime.datetime.now()  # Get the current time
+        fname = current_time.strftime("TEC_temperature_output_%Y-%m-%d_%H-%M-%S.csv")
+        
+        with open(fname, 'a', newline='') as file:
+            writer = csv.writer(file, delimiter=';')
             writer.writerow(field_names)
             while not globals.kill_button_pressed:
                 data = self.get_data_csv()
