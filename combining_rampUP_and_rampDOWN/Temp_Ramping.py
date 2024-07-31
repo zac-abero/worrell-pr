@@ -192,7 +192,7 @@ class MeerstetterTEC(object):
         csv_thread.start()
     
     
-    def ramp_up_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
+    def ramp_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan, rampUp = True):
 
         current_temp = self.get_temp() #get the current temperature
         rampTo = current_temp
@@ -204,8 +204,13 @@ class MeerstetterTEC(object):
                 if globals.kill_button_pressed == True: #if the kill button is pressed, break out of the loop
                     break
                 
-                #increment the rampTo value by the ramp_rate if the rampTo value plus the ramp_rate is less than the target_temp
-                rampTo = rampTo + ramp_rate if rampTo + ramp_rate <= target_temp else target_temp 
+                if rampUp:
+                    #increment the rampTo value by the ramp_rate if the rampTo value plus the ramp_rate is less than the target_temp
+                    rampTo = rampTo + ramp_rate if rampTo + ramp_rate <= target_temp else target_temp 
+                else:
+                    #decrement the rampTo value by the ramp_rate if the rampTo value minus the ramp_rate is greater than the target_temp
+                    rampTo = rampTo - ramp_rate if rampTo - ramp_rate >= target_temp else target_temp
+                
                 print("ramping to: " + str(rampTo))
                 self.set_temp(rampTo)
                                 
@@ -224,36 +229,6 @@ class MeerstetterTEC(object):
                 else: #otherwise, sleep for 15 seconds, allowing temp to stabilize
                     time.sleep(15)
         
-
-    def ramp_down_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan):
-        
-        current_temp = self.get_temp()
-        rampTo = current_temp
-        self.open_CSV_thread() #initialize the thread to write to the CSV file
-        
-        while abs(current_temp - target_temp) > 0.01: # using a tolerance of 0.01
-                
-                if globals.kill_button_pressed == True:
-                    return
-                
-                rampTo = rampTo - ramp_rate if rampTo - ramp_rate >= target_temp else target_temp
-                print("ramping to: " + str(rampTo))
-                self.set_temp(rampTo)                
-                
-                while True: 
-                    if globals.kill_button_pressed == True:
-                        break
-                    time.sleep(1)
-                    current_temp = self.get_temp()
-                    print("currentTemp is: " + str(current_temp))
-                    if abs(current_temp - rampTo) < 0.01:
-                        break
-                
-                if scan == True:
-                    autoGUI.scan(current_temp, hold_rate)
-                else:
-                    time.sleep(15)
-
 
     
     def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
@@ -281,10 +256,10 @@ class MeerstetterTEC(object):
         #ramp to the initial starting temperature
         if starting_temp < current_temp: #if the starting temp is less than the current temp, ramp down to the starting temp
             target_temp = starting_temp
-            self.ramp_down_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = False)
         else: #otherwise, ramp up to the starting temp
             target_temp = starting_temp
-            self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = True)
         
         #initial scan at starting temp
         current_temp = self.get_temp()
@@ -293,9 +268,9 @@ class MeerstetterTEC(object):
         
         #preform the actual ramping
         if self.get_temp() < target_temp:
-            self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True, rampUp = True)
         else:
-            self.ramp_down_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True,   rampUp = False)
         
         #last scan at target temperature
         if globals.kill_button_pressed == True: 
