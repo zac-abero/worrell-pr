@@ -15,11 +15,11 @@ from openpyxl import *
 # Establishing base dataframe for all read-in data to be placed into
 data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
 # Cell to investigate
-cell = "A3"
+cell = "b2"
 
 # Open a selection screen for what sheet to run this function on
 
-tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing
+tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing 
 workbook = askopenfilename() # show an "Open" dialog box and return the path to the selected file
 print(workbook + " successfully loaded")
 
@@ -49,10 +49,10 @@ for sheet in reversed(book):
     mode = find_cell("Mode", spreadsheet)
     gain = find_cell("Gain", spreadsheet)
     start_time = find_cell("Start Time:", spreadsheet)
-    #end_time = find_cell("End Time:", spreadsheet)     
+    end_time = find_cell("End Time:", spreadsheet)     
     
     # List for all important named cell locations in the sheet
-    value_list = [mode, gain, start_time]
+    value_list = [mode, gain, start_time, end_time]
     
     setup_df = pd.DataFrame()
     
@@ -63,28 +63,43 @@ for sheet in reversed(book):
     
     # Transpose and Correct Dataframe Labels
     setup_df = setup_df.T
-    new_header = setup_df.iloc[0] #grab the first row for the header
-    setup_df = setup_df[1:] #take the data less the header row
-    setup_df.columns = new_header #set the header row as the df header
+    new_header = setup_df.iloc[0] # grab the first row for the header
+    setup_df = setup_df[1:] # take the data less the header row
+    setup_df.columns = new_header # set the header row as the df header
+    setup_df.columns = setup_df.columns.str.strip() # stripping leading and trailing whitespace
+
         
     # Print Dataframe
     print(setup_df.head())
     
-    start_time_value = setup_df['Start Time:'][setup_df["Start Time:"].first_valid_index()]
-    gain = setup_df['Gain'][setup_df["Gain"].first_valid_index()]
+    # Check for valid indices before accessing the values
+    start_time_index = setup_df["Start Time:"].first_valid_index()
+    end_time_index = setup_df["End Time:"].first_valid_index()
+    gain_index = setup_df["Gain"].first_valid_index()
+    try:
+        if start_time_index is not None:
+            start_time_value = setup_df['Start Time:'][start_time_index]
+            start_time_value = pd.to_datetime(start_time_value)
+        else:
+            raise ValueError("No valid 'Start Time:' found")
 
-    print(start_time_value)
-    
-    #end_time_value = setup_df['End Time:'][setup_df["End Time:"].first_valid_index()]
-    #print(end_time_value)
-    
-    start_time_value = pd.to_datetime(start_time_value)    
-    #end_time_value = pd.to_datetime(end_time_value)    
+        if end_time_index is not None:
+            end_time_value = setup_df['End Time:'][end_time_index]
+            end_time_value = pd.to_datetime(end_time_value)
+        else:
+            raise ValueError("No valid 'End Time:' found")
+
+        if gain_index is not None:
+            gain = setup_df['Gain'][gain_index]
+        else:
+            raise ValueError("No valid 'Gain' found") 
+    except:
+        pass
 
     csv_df['Time'] = pd.to_datetime(csv_df['Time'])
             
     temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
-    print(temp_df.head())
+    # print(temp_df.head())
     
     temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
     
@@ -100,13 +115,13 @@ for sheet in reversed(book):
     new_header2 = table_df.iloc[0] #grab the first row for the header
     table_df = table_df[1:] #take the data less the header row
     table_df.columns = new_header2 #set the header row as the df header
-    print(table_df.head(10))
+    # print(table_df.head(10))
     
-    mean = table_df.loc[table_df['Well'] == cell]['Mean'].values[0] # pairing on well type
-    st_dev = table_df.loc[table_df['Well'] == cell]['StDev'].values[0] # pairing on well type
+    mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values[0] # pairing on well type
+    st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values[0] # pairing on well type
 
     
-    sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
+    sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value, 'EndTime' : end_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
     
     df2 = pd.DataFrame([sheet_dict])
 
