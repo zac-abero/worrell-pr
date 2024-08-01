@@ -178,9 +178,9 @@ class MeerstetterTEC(object):
         field_names = ["Time", "CH 1 Object Temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
         
         current_time = datetime.datetime.now()  # Get the current time
-        fname = current_time.strftime("TEC_temperature_output_%Y-%m-%d_%H-%M-%S.csv")
+        #fname = current_time.strftime("TEC_temperature_output_%Y-%m-%d_%H-%M-%S.csv")
         
-        with open(fname, 'a', newline='') as file:
+        with open('TEC_temperature_output.csv', 'a', newline='') as file:
             writer = csv.writer(file, delimiter=';')
             writer.writerow(field_names)
             while not globals.kill_button_pressed:
@@ -280,14 +280,11 @@ class MeerstetterTEC(object):
         self.enable() #enable the TEC to allow for ramping
         current_temp = self.get_temp() #get the current temperature
         
-        
         #ramp to the initial starting temperature
-        if starting_temp < current_temp: #if the starting temp is less than the current temp, ramp down to the starting temp
-            target_temp = starting_temp
-            self.ramp_down_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
+        if starting_temp < current_temp: #if the starting temp is less than the current temp, ramp down to the starting temp 
+            self.ramp_down_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False)
         else: #otherwise, ramp up to the starting temp
-            target_temp = starting_temp
-            self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False)
+            self.ramp_up_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False)
         
         #initial scan at starting temp
         current_temp = self.get_temp()
@@ -298,6 +295,7 @@ class MeerstetterTEC(object):
         if self.get_temp() < target_temp:
             self.ramp_up_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True)
         else:
+            
             self.ramp_down_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True)
         
         #last scan at target temperature

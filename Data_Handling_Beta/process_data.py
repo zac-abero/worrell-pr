@@ -103,7 +103,9 @@ def chart(cell_name):
         temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
         # print(temp_df.head())
         
-        temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
+        temperature = temp_df['CH 1 Object Temperature'].values # drop name/dtypes from the merged data
+                
+        temperature = float(temperature)
         
         # 2nd dataframe will be the wells charted data with wells, mean, stdev
         
