@@ -191,13 +191,14 @@ class MeerstetterTEC(object):
         csv_thread.daemon = True  # Ensure the thread exits when the main program does
         csv_thread.start()
     
+    def temperature_graph(self):
+        pass
     
     def ramp_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan, rampUp = True):
 
         current_temp = self.get_temp() #get the current temperature
         rampTo = current_temp
         
-        self.open_CSV_thread() #initialize the thread to write to the CSV file
         
         while abs(current_temp - target_temp) > 0.01:  # using a tolerance of 0.01
                 
@@ -248,18 +249,17 @@ class MeerstetterTEC(object):
         
         hold_rate= 10 + (numberOfWells*10) + 10 #calculate the hold rate based on the number of wells
         autoGUI = automate_GUI() #initialize the automate_GUI class
-        autoGUI.getButtonLocation(10) #get the button location
+        autoGUI.getButtonLocation(10) #get the start button location
         self.enable() #enable the TEC to allow for ramping
         current_temp = self.get_temp() #get the current temperature
-        
+        self.open_CSV_thread() #initialize the thread to write to the CSV file
+
         
         #ramp to the initial starting temperature
         if starting_temp < current_temp: #if the starting temp is less than the current temp, ramp down to the starting temp
-            target_temp = starting_temp
-            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = False)
+            self.ramp_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = False)
         else: #otherwise, ramp up to the starting temp
-            target_temp = starting_temp
-            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = True)
+            self.ramp_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = True)
         
         #initial scan at starting temp
         current_temp = self.get_temp()
