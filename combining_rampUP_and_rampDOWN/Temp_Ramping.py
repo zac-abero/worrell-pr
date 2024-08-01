@@ -176,7 +176,8 @@ class MeerstetterTEC(object):
         """
         
         field_names = ["time", "object temperature", "output current", "output voltage"]
-            
+        
+        
         with open('TEC_temperature_output.csv', 'a', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(field_names)
