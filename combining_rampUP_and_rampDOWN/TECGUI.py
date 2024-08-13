@@ -3,7 +3,7 @@ from tkinter import messagebox
 from Temp_Ramping import MeerstetterTEC 
 import logging 
 import globals
-#import temperatureGraph
+import temperatureGraph
 
 """
 This file contains a basic GUI for the temperature ramping software in the file Temp_Ramping.py.
@@ -75,7 +75,12 @@ def startRamp():
     # get the values from DEFAULT_QUERIES
     print(tec.get_data())
     # yeet the values
-    # initialize temperature graph here (with threading)
+    
+    #TODO initialize temperature graph here (with threading)
+    #tempGraph = temperatureGraph.graphTemp(tec)
+    #tempGraph.run_animation()
+    #TODO maybe run the CSV in a seperate thread here too
+    tec.open_CSV_thread() #initialize the thread to write to the CSV file
     tec.start_ramp_temp(starting_temp, target_temp, ramp_rate, number_of_wells)
 
 

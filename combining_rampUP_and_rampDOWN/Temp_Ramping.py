@@ -253,7 +253,6 @@ class MeerstetterTEC(object):
         autoGUI.getButtonLocation(10) #get the start button location
         self.enable() #enable the TEC to allow for ramping
         current_temp = self.get_temp() #get the current temperature
-        self.open_CSV_thread() #initialize the thread to write to the CSV file
 
         
         #ramp to the initial starting temperature
