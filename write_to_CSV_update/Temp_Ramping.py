@@ -178,7 +178,10 @@ class MeerstetterTEC(object):
         field_names = ["Time", "CH 1 Object Temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
         
         current_time = datetime.datetime.now()  # Get the current time
+        
         #fname = current_time.strftime("TEC_temperature_output_%Y-%m-%d_%H-%M-%S.csv")
+        
+        # TODO: Fetch current datetime at the beginning of the file then append rather within the function
         
         with open('TEC_temperature_output.csv', 'a', newline='') as file:
             writer = csv.writer(file, delimiter=';')
