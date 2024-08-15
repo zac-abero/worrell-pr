@@ -8,7 +8,7 @@ class graphTemp:
         def __init__(self, meerstetter_instance) -> None:
             # Initialize figure and axis
             self.tec = meerstetter_instance
-            fig, ax = plt.subplots()
+            self.fig, self.ax = plt.subplots()
             self.x_vals = []
             self.y_vals = []
 
