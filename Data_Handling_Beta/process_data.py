@@ -8,7 +8,7 @@ import tkinter as tk
 
 from data_fetch import *
 from tkinter.filedialog import askopenfilename
-from openpyxl import *
+from openpyxl import * 
 
 def chart(cell_name):
 
@@ -103,9 +103,7 @@ def chart(cell_name):
         temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
         # print(temp_df.head())
         
-        temperature = temp_df['CH 1 Object Temperature'].values # drop name/dtypes from the merged data
-                
-        temperature = float(temperature)
+        temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
         
         # 2nd dataframe will be the wells charted data with wells, mean, stdev
         
