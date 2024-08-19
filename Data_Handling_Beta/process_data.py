@@ -119,8 +119,8 @@ def chart(cell_name):
         table_df.columns = new_header2 #set the header row as the df header
         # print(table_df.head(10))
         
-        mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values[0] # pairing on well type
-        st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values[0] # pairing on well type
+        mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values # pairing on well type
+        st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values # pairing on well type
 
         
         sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value, 'EndTime' : end_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
