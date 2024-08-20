@@ -2,6 +2,19 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import time
 
+def graphTemp(x_vals, y_vals):
+    fig, ax = plt.subplots()
+    ax.plot(x_vals, y_vals)
+    plt.xlabel('Time (s)')
+    plt.ylabel('Temperature (°C)')
+    plt.title('Live Temperature Data')
+    plt.show()
+    
+x_vals = [1, 2, 3, 4, 5]
+y_vals = [1, 2, 3, 4, 5]
+graphTemp(x_vals, y_vals)
+
+""" 
 
 class graphTemp:
         
@@ -36,3 +49,4 @@ class graphTemp:
             plt.tight_layout()
             plt.show()
         
+"""

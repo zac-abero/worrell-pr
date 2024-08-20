@@ -3,7 +3,7 @@ from tkinter import messagebox
 from Temp_Ramping import MeerstetterTEC 
 import logging 
 import globals
-import temperatureGraph
+import dataCollectionClasses
 
 """
 This file contains a basic GUI for the temperature ramping software in the file Temp_Ramping.py.
@@ -72,16 +72,15 @@ def startRamp():
     ramp_parameters = [starting_temp, target_temp, ramp_rate, number_of_wells]
 
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(module)s:%(levelname)s:%(message)s")
-    # get the values from DEFAULT_QUERIES
-    print(tec.get_data())
-    # yeet the values
     
-    #TODO initialize temperature graph here (with threading)
-    #tempGraph = temperatureGraph.graphTemp(tec)
-    #tempGraph.run_animation()
-    #TODO maybe run the CSV in a seperate thread here too
-    #tec.open_CSV_thread() #initialize the thread to write to the CSV file
+    #initialize the data collection class
+    dc = dataCollectionClasses.dataCollection(tec)
+    dc.openThreadsDataCollection()
     tec.start_ramp_temp(starting_temp, target_temp, ramp_rate, number_of_wells)
+    
+    graph_temp_instance = dc.graphTemp(dc)
+    graph_temp_instance.run_animation() #trigger the animation, need to run here in the main thread 
+                                        #because matplotlib does not support threading
 
 
 def showInfo(buttonClicked):
