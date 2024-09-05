@@ -15,6 +15,7 @@ import matplotlib.pyplot as plt
 
     # Example formatting use of this function : find_cell("Mean", 'B:B', 0)
 
+#XLwings version, deprecated
 def find_cell(value, range, sheet_number):
     wb = xw.books.active
     for cell in wb.sheets[sheet_number].range(range)[0:]:

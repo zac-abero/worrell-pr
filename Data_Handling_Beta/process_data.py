@@ -5,12 +5,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 import tkinter as tk 
-
-from data_fetch import *
 from tkinter.filedialog import askopenfilename
+from data_fetch import *
 from openpyxl import * 
 
-def chart(cell_name):
+def chart(cell_name, excel, csv):
 
     # Variables
 
@@ -22,7 +21,7 @@ def chart(cell_name):
     # Open a selection screen for what sheet to run this function on
 
     tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing 
-    workbook = askopenfilename() # show an "Open" dialog box and return the path to the selected file
+    workbook = excel # show an "Open" dialog box and return the path to the selected file
     print(workbook + " successfully loaded")
 
     # Load excel workbook from selection
@@ -71,7 +70,6 @@ def chart(cell_name):
         setup_df.columns = new_header # set the header row as the df header
         setup_df.columns = setup_df.columns.str.strip() # stripping leading and trailing whitespace
 
-            
         # Print Dataframe
         print(setup_df.head())
         
@@ -147,19 +145,26 @@ def chart(cell_name):
         #mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values[0] # pairing on well type
         #st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values[0] # pairing on well type
         
+        mean = None
+        st_dev = None
+
+        
         # Check if the DataFrame slice is empty
         mean_values = table_df.loc[table_df['Well'] == cell.upper()]['Mean']
         stdev_values = table_df.loc[table_df['Well'] == cell.upper()]['StDev']
+        
+        try:
+            if mean_values.empty:
+                raise ValueError(f"No data found for cell {cell.upper()} in 'Mean' column")
+            else:
+                mean = mean_values.values[0]
 
-        if mean_values.empty:
-            raise ValueError(f"No data found for cell {cell.upper()} in 'Mean' column")
-        else:
-            mean = mean_values.values[0]
-
-        if stdev_values.empty:
-            raise ValueError(f"No data found for cell {cell.upper()} in 'StDev' column")
-        else:
-            st_dev = stdev_values.values[0]
+            if stdev_values.empty:
+                raise ValueError(f"No data found for cell {cell.upper()} in 'StDev' column")
+            else:
+                st_dev = stdev_values.values[0]
+        except:
+            pass
         
         sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value, 'EndTime' : end_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
         
