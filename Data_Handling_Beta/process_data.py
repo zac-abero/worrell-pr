@@ -8,7 +8,7 @@ import tkinter as tk
 
 from data_fetch import *
 from tkinter.filedialog import askopenfilename
-from openpyxl import *
+from openpyxl import * 
 
 def chart(cell_name):
 
@@ -35,6 +35,7 @@ def chart(cell_name):
     # Load comma separated values file from selection with separator as ';'
     csv_df = pd.read_csv(csv, sep=';')
     csv_df.info()
+    
 
     # Workbook stores sheets in nth to 1 order so we iterate through them with reveresed()
     for sheet in reversed(book):   
@@ -78,6 +79,18 @@ def chart(cell_name):
         start_time_index = setup_df["Start Time:"].first_valid_index()
         end_time_index = setup_df["End Time:"].first_valid_index()
         gain_index = setup_df["Gain"].first_valid_index()
+        
+        # Check if the column is in datetime format
+        if not pd.api.types.is_datetime64_any_dtype(setup_df['Start Time:']):
+            setup_df['Start Time:'] = pd.to_datetime(setup_df['Start Time:'], errors='coerce')
+
+        if not pd.api.types.is_datetime64_any_dtype(setup_df['End Time:']):
+            setup_df['End Time:'] = pd.to_datetime(setup_df['End Time:'], errors='coerce')
+
+        if not pd.api.types.is_datetime64_any_dtype(csv_df['Time']):
+            csv_df['Time'] = pd.to_datetime(csv_df['Time'], errors='coerce')
+
+        
         try:
             if start_time_index is not None:
                 start_time_value = setup_df['Start Time:'][start_time_index]
@@ -98,14 +111,24 @@ def chart(cell_name):
         except:
             pass
 
-        csv_df['Time'] = pd.to_datetime(csv_df['Time'])
+        # for index, row in csv_df.iterrows():
+        #     #print(row['Time'], row['CH 1 Object Temperature'])
+        #     try: 
+        #         if not pd.api.types.is_datetime64_any_dtype :
+        #             print(row['Time'], row['CH 1 Object Temperature'])
+        #             #csv_df.drop(axis=row)
+        #             #raise ValueError("Not a datetime at row " + row)
+        #         else: 
+        #             csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
+        #     except:
+        #         pass
+        csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
+
                 
         temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
         # print(temp_df.head())
         
-        temperature = temp_df['CH 1 Object Temperature'].values # drop name/dtypes from the merged data
-                
-        temperature = float(temperature)
+        temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
         
         # 2nd dataframe will be the wells charted data with wells, mean, stdev
         
@@ -119,11 +142,24 @@ def chart(cell_name):
         new_header2 = table_df.iloc[0] #grab the first row for the header
         table_df = table_df[1:] #take the data less the header row
         table_df.columns = new_header2 #set the header row as the df header
-        # print(table_df.head(10))
+        print(table_df.head(10))
         
-        mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values # pairing on well type
-        st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values # pairing on well type
+        #mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values[0] # pairing on well type
+        #st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values[0] # pairing on well type
+        
+        # Check if the DataFrame slice is empty
+        mean_values = table_df.loc[table_df['Well'] == cell.upper()]['Mean']
+        stdev_values = table_df.loc[table_df['Well'] == cell.upper()]['StDev']
 
+        if mean_values.empty:
+            raise ValueError(f"No data found for cell {cell.upper()} in 'Mean' column")
+        else:
+            mean = mean_values.values[0]
+
+        if stdev_values.empty:
+            raise ValueError(f"No data found for cell {cell.upper()} in 'StDev' column")
+        else:
+            st_dev = stdev_values.values[0]
         
         sheet_dict = {'Sheet': sheet, 'StartTime': start_time_value, 'EndTime' : end_time_value,  'Gain': gain, 'Temperature': temperature, 'Mean': mean, 'StDev': st_dev}
         
