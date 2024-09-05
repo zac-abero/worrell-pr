@@ -17,7 +17,6 @@ def showInfo(buttonClicked):
     if buttonClicked == "select_cell":
         messagebox.showinfo("Info", "This is the cell you would like to analyze")
 
-
 root = tk.Tk()
 root.geometry("200x200")
 
