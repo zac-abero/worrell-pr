@@ -9,7 +9,7 @@ from tkinter.filedialog import askopenfilename
 from data_fetch import *
 from openpyxl import * 
 
-def chart(cell_name, excel, csv):
+def chart(cell_name): #, excel, csv
 
     # Variables
 
@@ -17,11 +17,11 @@ def chart(cell_name, excel, csv):
     data = pd.DataFrame(columns = ['Sheet', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])    
     # Cell to investigate
     cell = cell_name
-
+    
     # Open a selection screen for what sheet to run this function on
 
     tk.Tk().withdraw() # We don't want a full GUI, so keep the root window from appearing 
-    workbook = excel # show an "Open" dialog box and return the path to the selected file
+    workbook = askopenfilename() # show an "Open" dialog box and return the path to the selected file
     print(workbook + " successfully loaded")
 
     # Load excel workbook from selection
@@ -34,7 +34,6 @@ def chart(cell_name, excel, csv):
     # Load comma separated values file from selection with separator as ';'
     csv_df = pd.read_csv(csv, sep=';')
     csv_df.info()
-    
 
     # Workbook stores sheets in nth to 1 order so we iterate through them with reveresed()
     for sheet in reversed(book):   
@@ -113,7 +112,7 @@ def chart(cell_name, excel, csv):
         csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
                 
         temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
-        # print(temp_df.head())
+        print(temp_df.head())
         
         temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
         
@@ -131,8 +130,6 @@ def chart(cell_name, excel, csv):
         table_df.columns = new_header2 #set the header row as the df header
         print(table_df.head(10))
         
-        #mean = table_df.loc[table_df['Well'] == cell.upper()]['Mean'].values[0] # pairing on well type
-        #st_dev = table_df.loc[table_df['Well'] == cell.upper()]['StDev'].values[0] # pairing on well type
         
         mean = None
         st_dev = None
