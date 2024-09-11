@@ -108,20 +108,9 @@ def chart(cell_name, excel, csv):
                 raise ValueError("No valid 'Gain' found") 
         except:
             pass
-
-        # for index, row in csv_df.iterrows():
-        #     #print(row['Time'], row['CH 1 Object Temperature'])
-        #     try: 
-        #         if not pd.api.types.is_datetime64_any_dtype :
-        #             print(row['Time'], row['CH 1 Object Temperature'])
-        #             #csv_df.drop(axis=row)
-        #             #raise ValueError("Not a datetime at row " + row)
-        #         else: 
-        #             csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
-        #     except:
-        #         pass
+        
+        
         csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
-
                 
         temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
         # print(temp_df.head())
