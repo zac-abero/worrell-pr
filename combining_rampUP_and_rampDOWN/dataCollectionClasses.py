@@ -4,6 +4,14 @@ import time
 import csv
 import threading
 import globals 
+import datetime
+
+now = str(datetime.datetime.now())
+now_no_spaces = now.replace(" ", "_")
+now_corrected = now.replace(":", "-")
+
+
+fname = (now_corrected + "_TEC_Temperature_output.csv")
 
 class dataCollection:
     
@@ -31,10 +39,9 @@ class dataCollection:
                 None
                 """
                 
-                field_names = ["time", "object temperature", "output current", "output voltage"]
+                field_names = ["Time", "CH 1 Object temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
                 
-                
-                with open('TEC_temperature_output.csv', 'a', newline='') as file:
+                with open(fname, 'a', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow(field_names)
                     while not globals.kill_button_pressed:
