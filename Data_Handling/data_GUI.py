@@ -6,6 +6,13 @@ import logging
 import process_data
 #import temperatureGraph
 
+# Variables to be processed
+
+excel_fname = ""
+csv_fname = ""
+
+
+
 def process():
     try:
         cell = cell_name.get()
@@ -46,7 +53,7 @@ csv_df.info()
 """    
 
 root = tk.Tk()
-root.geometry("200x200")
+root.geometry("400x400")
 
 bottom_frame = tk.Frame(root)
 bottom_frame.pack(side='bottom', anchor='w')
