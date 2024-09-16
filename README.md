@@ -72,3 +72,6 @@ Blue Anodized Aluminum Cooling Block
 Custom plate reader drop plate and clip for wires
 https://www.printables.com/model/1009608-custom-plate-reader-tray-and-clip
 
+19-well top plate (meant to be made from aluminum)
+https://www.printables.com/model/1009621-19-well-top-plate
+
