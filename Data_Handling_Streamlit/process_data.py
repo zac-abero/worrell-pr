@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import csv
 from data_fetch import *
 
 # merge_data is a function that takes in two file paths (excel and csv) and merges the data based on time data
