@@ -61,7 +61,7 @@ class MeerstetterTEC(object):
         self.session().stop()
 
 
-    def __init__(self, port=None, scan_timeout=30, channel=1, queries=DEFAULT_QUERIES, *args, **kwars):
+    def __init__(self, port=None, scan_timeout=30, channel=(1,2), queries=DEFAULT_QUERIES, *args, **kwars):
         assert channel in (1, 2)
         self.channel = channel
         self.port = port
