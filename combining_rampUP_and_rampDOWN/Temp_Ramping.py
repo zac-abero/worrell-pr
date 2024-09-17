@@ -17,9 +17,6 @@ import datetime
 #import matplotlib.pyplot as plt
 #import matplotlib.animation as animation
 
-now = datetime.datetime.now()
-fname = f'{now}_TEC_Temperature_output.csv'
-
 # default queries from command table below
 DEFAULT_QUERIES = [
     "loop status",
@@ -141,7 +138,6 @@ class MeerstetterTEC(object):
                 self._session = None
         return data
     
-    
     def get_temp(self) -> float:
         id = COMMAND_TABLE["object temperature"][0]
         try:
@@ -163,29 +159,6 @@ class MeerstetterTEC(object):
         assert type(value) is float
         logging.info("set object temperature for channel {} to {} C".format(self.channel, value))
         return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel)
-
-
-    def writeToCSV(self):
-        """    
-        Writes data to a CSV file.
-
-        This method opens a file named 'TEC_temperature_output.csv' and writes data to it in CSV format.
-        The data is obtained using the `get_data_csv` method, and the field names for the CSV
-        columns are specified in the `field_names` list.
-
-        Returns: 
-        None
-        """
-        
-        field_names = ["Time", "CH 1 Object temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
-        
-        with open(fname, 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(field_names)
-            while not globals.kill_button_pressed:
-                data = self.get_data_csv()
-                writer.writerow(data)
-                time.sleep(1)  # Add a delay to avoid busy-waiting
 
 
     def open_CSV_thread(self):
@@ -232,7 +205,6 @@ class MeerstetterTEC(object):
                 else: #otherwise, sleep for 15 seconds, allowing temp to stabilize
                     time.sleep(15)
         
-
     
     def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
         """

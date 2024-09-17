@@ -94,7 +94,6 @@ def showInfo(buttonClicked):
         messagebox.showinfo("Info", "This dictates how long the settle/pause time for a scan is. More Wells = More Time")
     
 
-
 root = tk.Tk()
 root.geometry("400x570")
 
@@ -138,7 +137,6 @@ tk.Button(button_frame, text="Kill Ramp", command=killRampAtRoot).pack(side=tk.L
 
 # Adjust the parent frame to center the button_frame
 frame.columnconfigure(0, weight=1)
-
 
 updateCurrentTemp()
 
