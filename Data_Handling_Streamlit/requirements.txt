@@ -2,5 +2,3 @@ streamlit
 pandas
 numpy
 matplotlib
-data_fetch
-process_data
