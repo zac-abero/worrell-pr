@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+matplotlib
+openpyxl
+csv
+tkinter
+tkinter.filedialog import askopenfilename
+data_fetch
+process_data
