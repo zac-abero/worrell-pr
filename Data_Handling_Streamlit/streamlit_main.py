@@ -28,7 +28,7 @@ def display_data():
 def display_graph():
     if data:
         df = pd.read_csv(data)
-        df = df[["Temperature", "Mean"]].apply(pd.to_numeric, errors = 'coerce') # converts to numeric, leaves "INVALIDs" as NaN
+        #df = df[["Temperature", "Mean"]].apply(pd.to_numeric, errors = 'coerce') # converts to numeric, leaves "INVALIDs" as NaN
         #cell_data = df.loc[df['Cell'] == 'A3']
         st.line_chart(df, x="Temperature", y="Mean", x_label="Temperature", y_label="Mean")
     else:
