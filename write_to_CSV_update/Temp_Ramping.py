@@ -62,8 +62,8 @@ class MeerstetterTEC(object):
         self.session().stop()
 
 
-    def __init__(self, port=None, scan_timeout=30, channel=1, queries=DEFAULT_QUERIES, *args, **kwars):
-        assert channel in (1, 2)
+    def __init__(self, port=None, scan_timeout=30, channel=[1,2], queries=DEFAULT_QUERIES, *args, **kwars):
+
         self.channel = channel
         self.port = port
         self.scan_timeout = scan_timeout
@@ -114,7 +114,7 @@ class MeerstetterTEC(object):
         for description in self.queries:
             id, unit = COMMAND_TABLE[description]
             try:
-                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
                 data.update({description: (value, unit)})
             except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
@@ -132,7 +132,7 @@ class MeerstetterTEC(object):
         for query in CSV_QUERIES:
             id = COMMAND_TABLE[query][0]
             try:
-                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
                 data.append(value)
             except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
@@ -143,7 +143,7 @@ class MeerstetterTEC(object):
     def get_temp(self) -> float:
         id = COMMAND_TABLE["object temperature"][0]
         try:
-            value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+            value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
         except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
                 self._session = None
@@ -159,8 +159,9 @@ class MeerstetterTEC(object):
         """
         # assertion to explicitly enter floats
         assert type(value) is float
-        logging.info("set object temperature for channel {} to {} C".format(self.channel, value))
-        return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel)
+        logging.info("set object temperature for channel {} to {} C".format(self.channel[0], value))
+        self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel[0])
+        return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel[1])
 
 
     def writeToCSV(self):
@@ -310,7 +311,6 @@ class MeerstetterTEC(object):
         #turn off the TEC
         self.disable()
                 
-
     def _set_enable(self, enable=True):
         """
         Enable or disable control loop
@@ -319,8 +319,11 @@ class MeerstetterTEC(object):
         :return:
         """
         value, description = (1, "on") if enable else (0, "off")
-        logging.info("set loop for channel {} to {}".format(self.channel, description))
-        return self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel)
+        logging.info("set loop for channel {} to {}".format(self.channel[0], description))
+        logging.info("set loop for channel {} to {}".format(self.channel[1], description))
+
+        self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel[0])
+        return self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel[1])
 
     def enable(self):
         return self._set_enable(True)
