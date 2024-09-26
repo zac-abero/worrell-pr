@@ -33,6 +33,13 @@ def display_graph():
         st.line_chart(df, x="Temperature", y="Mean", x_label="Temperature", y_label="Mean")
     else:
         st.error("Please upload a merged CSV data file.")
+        
+        
+def cells():
+    if data:
+        df = pd.read_csv(data)
+        cell_list = df['Cell'].unique().tolist()
+        print(cell_list)
 
 # Begin App Layout
 
@@ -68,7 +75,7 @@ with col1:
         st.download_button('Download CSV', merged_csv, 'merged_data.csv')
 
 with col2:
-    st.button("Display Data", on_click=display_data)
+    st.button("Display Data", on_click=cells)
 with col3:
     st.button("Display Graph", on_click=display_graph)
 
