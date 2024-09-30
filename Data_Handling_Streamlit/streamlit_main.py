@@ -75,7 +75,7 @@ with col1:
         st.download_button('Download CSV', merged_csv, 'merged_data.csv')
 
 with col2:
-    st.button("Display Data", on_click=cells)
+    st.button("Display Data", on_click=display_data)
 with col3:
     st.button("Display Graph", on_click=display_graph)
 
