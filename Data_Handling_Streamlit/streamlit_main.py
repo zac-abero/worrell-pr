@@ -64,8 +64,8 @@ st.logo(logo, link='https://www.bradyworrell.com/',icon_image=logo_small)
 
 # File Upload
 
-excel_fname = st.file_uploader("Excel file", type=['xlsx', 'xls'])
-csv_fname = st.file_uploader("CSV file", type=['csv'])
+excel_fname = st.file_uploader("Plate Reader Excel File", type=['xlsx', 'xls'])
+csv_fname = st.file_uploader("TEC Controller Temperature CSV file", type=['csv'])
 data = st.file_uploader("Merged CSV Data file", type=['csv'])
 
 col1, col2, col3 = st.columns(3, vertical_alignment="bottom")
