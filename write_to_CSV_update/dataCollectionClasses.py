@@ -5,13 +5,27 @@ import csv
 import threading
 import globals 
 import datetime
+import os
 
 now = str(datetime.datetime.now())
 now_no_spaces = now.replace(" ", "_")
 now_corrected = now.replace(":", "-")
 
-
 fname = (now_corrected + "_TEC_Temperature_output.csv")
+
+def create_desktop_folder(foldername):
+    folder_name = foldername
+
+    desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+    folder_path = os.path.join(desktop_path, folder_name)
+
+    try:
+        os.mkdir(folder_path)
+        print(f"Folder '{folder_name}' created on Desktop")
+        return folder_path
+    except FileExistsError:
+        print(f"Folder '{folder_name}' already exists on Desktop.")
+        return folder_path
 
 class dataCollection:
     
@@ -41,7 +55,13 @@ class dataCollection:
                 
                 field_names = ["Time", "CH 1 Object temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
                 
-                with open(fname, 'a', newline='') as file:
+                csv_folder_name = "TEC_Output"
+                
+                create_desktop_folder(csv_folder_name)
+                folder_path = create_desktop_folder(csv_folder_name)
+                filepath = os.path.join(folder_path, fname)
+                                
+                with open(filepath, 'a', newline='') as file:
                     writer = csv.writer(file)
                     writer.writerow(field_names)
                     while not globals.kill_button_pressed:
