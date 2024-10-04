@@ -48,7 +48,7 @@ def cells():
 st.header("Hello! welcome to the data processing app for the Worrell Lab Plate-Reader Project!")
 
 # Sidebar
-st.sidebar.radio('Pages', options=['Merge Data', 'Data Analysis', 'Charting'])
+# st.sidebar.radio('Pages', options=['Merge Data', 'Data Analysis', 'Charting'])
 
 # Logo
 # Plotting imagery
