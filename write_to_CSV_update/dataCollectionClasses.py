@@ -53,7 +53,7 @@ class dataCollection:
                 None
                 """
                 
-                field_names = ["Time", "CH 1 Object temperature", "CH 1 Actual Output Current", "CH 1 Actual Output Voltage"]
+                field_names = ["Time","CH 1 Object Temperature","CH 1 Actual Output Current","CH 1 Actual Output Voltage"]
                 
                 csv_folder_name = "TEC_Output"
                 
