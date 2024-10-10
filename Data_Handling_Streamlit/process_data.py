@@ -13,7 +13,16 @@ def merge_data(excel_path, csv_path):
     # Dictionary of Dataframes (Excel book with sheets)
     book = pd.read_excel(excel_path, None, header=None)
     # Dataframe of the CSV
-    csv_df = pd.read_csv(csv_path, sep=',')
+    try:
+        csv_df = pd.read_csv(csv_path, sep=',')
+    except:
+        print("Delimiter is not ,")
+    else:
+        csv_df = pd.read_csv(csv_path, sep=';')
+
+    # lowercasing column names to avoid potential naming issues
+    csv_df.columns = csv_df.columns.str.lower()
+    
     
     # Create a dataframe containing all desired data
     data = pd.DataFrame(columns = ['Sheet', 'Cell', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])   
@@ -63,8 +72,8 @@ def merge_data(excel_path, csv_path):
         if not pd.api.types.is_datetime64_any_dtype(setup_df['End Time:']):
             setup_df['End Time:'] = pd.to_datetime(setup_df['End Time:'], errors='coerce')
 
-        if not pd.api.types.is_datetime64_any_dtype(csv_df['Time']):
-            csv_df['Time'] = pd.to_datetime(csv_df['Time'], errors='coerce')
+        if not pd.api.types.is_datetime64_any_dtype(csv_df['time']):
+            csv_df['time'] = pd.to_datetime(csv_df['time'], errors='coerce')
 
         
         try:
@@ -88,11 +97,11 @@ def merge_data(excel_path, csv_path):
             pass
         
         
-        csv_df['Time'] = pd.to_datetime(csv_df['Time'], format='mixed')
+        csv_df['time'] = pd.to_datetime(csv_df['time'], format='mixed')
                 
-        temp_df = csv_df.loc[(csv_df['Time'] >= start_time_value) & (csv_df['Time'] <= start_time_value)]
+        temp_df = csv_df.loc[(csv_df['time'] >= start_time_value) & (csv_df['time'] <= start_time_value)]
         
-        temperature = temp_df['CH 1 Object Temperature'].values[0] # drop name/dtypes from the merged data
+        temperature = temp_df['ch 1 object temperature'].values[0] # drop name/dtypes from the merged data
         
         # 2nd dataframe will be the wells charted data with wells, mean, stdev
         
