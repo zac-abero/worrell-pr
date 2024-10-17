@@ -12,17 +12,18 @@ def merge_data(excel_path, csv_path):
     
     # Dictionary of Dataframes (Excel book with sheets)
     book = pd.read_excel(excel_path, None, header=None)
-
-    # Dataframe of the CSV, python's onboard engine will be able to "sniff" the delimiter automatically.
+    # Dataframe of the CSV
     try:
-        csv_df = pd.read_csv(csv_path, sep=None, engine="python")
+        csv_df = pd.read_csv(csv_path, sep=',')
     except:
-        print("Delimiter is not available")
-        
+        print("Delimiter is not ,")
+    else:
+        csv_df = pd.read_csv(csv_path, sep=';')
+
     # lowercasing column names to avoid potential naming issues
     csv_df.columns = csv_df.columns.str.lower()
     
-
+    
     # Create a dataframe containing all desired data
     data = pd.DataFrame(columns = ['Sheet', 'Cell', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])   
     
