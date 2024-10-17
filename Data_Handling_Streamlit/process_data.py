@@ -13,8 +13,7 @@ def merge_data(excel_path, csv_path):
     # Dictionary of Dataframes (Excel book with sheets)
     book = pd.read_excel(excel_path, None, header=None)
     # Dataframe of the CSV
-    csv_df = pd.read_csv(csv_path, sep=',')
-    
+    csv_df = pd.read_csv(csv_path, sep=';')
     # Create a dataframe containing all desired data
     data = pd.DataFrame(columns = ['Sheet', 'Cell', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])   
     
