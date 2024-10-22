@@ -21,7 +21,6 @@ def merge_data(excel_path, csv_path):
         
     # lowercasing column names to avoid potential naming issues
     csv_df.columns = csv_df.columns.str.lower()
-    
 
     # Create a dataframe containing all desired data
     data = pd.DataFrame(columns = ['Sheet', 'Cell', 'StartTime', 'EndTime', 'Gain', 'Mean', 'StDev', 'Temperature'])   
@@ -73,7 +72,6 @@ def merge_data(excel_path, csv_path):
 
         if not pd.api.types.is_datetime64_any_dtype(csv_df['time']):
             csv_df['time'] = pd.to_datetime(csv_df['time'], errors='coerce')
-
         
         try:
             if start_time_index is not None:
@@ -92,29 +90,55 @@ def merge_data(excel_path, csv_path):
                 gain = setup_df['Gain'][gain_index]
             else:
                 raise ValueError("No valid 'Gain' found") 
-        except:
-            pass
+        except Exception as e:
+            print(f"An error occurred: {e}")
+            raise
         
         
         csv_df['time'] = pd.to_datetime(csv_df['time'], format='mixed')
                 
         temp_df = csv_df.loc[(csv_df['time'] >= start_time_value) & (csv_df['time'] <= start_time_value)]
         
+        # Check if temp_df is empty before accessing its elements
+        if temp_df.empty:
+            raise ValueError("No data found in the specified time range")
+        
         temperature = temp_df['ch 1 object temperature'].values[0] # drop name/dtypes from the merged data
         
-        # 2nd dataframe will be the wells charted data with wells, mean, stdev
-        
+       # 2nd dataframe will be the wells charted data with wells, mean, stdev
+
         well = find_cell("Well", spreadsheet)
+
+        # Debugging statements
+        print("Contents of spreadsheet:")
+        print(spreadsheet)
+
+        print("Value of well:")
+        print(well)
+
+        # Check if well.index.item() is within the bounds of the spreadsheet DataFrame
+        if well.index.item() >= len(spreadsheet):
+            raise IndexError(f"Index {well.index.item()} is out of bounds for spreadsheet with length {len(spreadsheet)}")
 
         # Creating a dataframe for the table data in the excel sheet
         well_table_df = pd.DataFrame()
         
+        print("Index of well:")
+        print(well.index)
+
         # Selecting from the index of the "Well" cell until the end of the values attached to that table. Dropping all rows with invalid data.
         well_table_df = spreadsheet.iloc[well.index.item():-1].dropna(axis=0, how='any')
-        new_header2 = well_table_df.iloc[0] #grab the first row for the header
-        well_table_df = well_table_df[1:] #take the data less the header row
-        well_table_df.columns = new_header2 #set the header row as the df header        
         
+        print(well_table_df)
+        
+        # Error handling
+        # if well_table_df.empty:
+        #     raise ValueError("No data found in the well table")
+        
+
+        new_header2 = well_table_df.iloc[0]  # grab the first row for the header
+        well_table_df = well_table_df[1:]  # take the data less the header row
+        well_table_df.columns = new_header2  # set the header row as the df header
         
         # Creating values to add to the sheet
         cell = None
