@@ -132,8 +132,8 @@ def merge_data(excel_path, csv_path):
         print(well_table_df)
         
         # Error handling
-        # if well_table_df.empty:
-        #     raise ValueError("No data found in the well table")
+        if well_table_df.empty:
+            raise ValueError("No data found in the well table")
         
 
         new_header2 = well_table_df.iloc[0]  # grab the first row for the header
