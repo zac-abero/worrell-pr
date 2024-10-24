@@ -12,9 +12,10 @@ import os
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 
-print(f"parent directory {cwd}")
+file_path = os.path.join(cwd, 'streamlit_main.py')
 
-file_path = os.path.join(cwd, "streamlit_main.py")
+
+print(f"file path {file_path}")
 
 
 os.system(f'streamlit run {file_path}')
