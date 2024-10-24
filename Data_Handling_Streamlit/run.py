@@ -2,9 +2,22 @@ import streamlit
 import streamlit_main
 
 # Run this file to run the streamlit browser without needing to enter a new terminal message
+# and to run the streamlit for immediate beta testing without having to merge on main
 
 import os 
-os.system('streamlit run c:/Users/oppos/Desktop/worrell-pr/Data_Handling_Streamlit/streamlit_main.py')
+
+# deprecated
+#os.system('streamlit run c:/Users/oppos/Desktop/worrell-pr/Data_Handling_Streamlit/streamlit_main.py')
+
+
+cwd = os.path.dirname(os.path.abspath(__file__))
+
+print(f"parent directory {cwd}")
+
+file_path = os.path.join(cwd, "streamlit_main.py")
+
+
+os.system(f'streamlit run {file_path}')
 
 '''
 # Images
