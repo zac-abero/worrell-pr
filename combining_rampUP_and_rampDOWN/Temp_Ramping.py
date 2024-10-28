@@ -8,11 +8,8 @@ import platform
 from mecom import MeComSerial, ResponseException, WrongChecksum
 from serial import SerialException
 from serial.serialutil import PortNotOpenError
-from navigateToThenTrigger import automate_GUI
+from automateGUI import automateGUI
 import time
-import threading
-import globals
-import csv
 import datetime
 #import matplotlib.pyplot as plt
 #import matplotlib.animation as animation
@@ -25,6 +22,8 @@ DEFAULT_QUERIES = [
     "target object temperature",
     "output current",
     "output voltage"
+    "device status"
+    
 ]
 
 # syntax
@@ -37,6 +36,7 @@ COMMAND_TABLE = {
     "output voltage": [1021, "V"],
     "sink temperature": [1001, "degC"],
     "ramp temperature": [1011, "degC"],
+    "device status": [1201, "1 or 0"]
 }
 
 CSV_QUERIES = [
@@ -61,9 +61,7 @@ class MeerstetterTEC(object):
     def _tearDown(self):
         self.session().stop()
 
-
-    def __init__(self, port=None, scan_timeout=30, channel=1, queries=DEFAULT_QUERIES, *args, **kwars):
-        assert channel in (1, 2)
+    def __init__(self, port=None, scan_timeout=30, channel=[1,2], queries=DEFAULT_QUERIES, *args, **kwars):
         self.channel = channel
         self.port = port
         self.scan_timeout = scan_timeout
@@ -101,12 +99,10 @@ class MeerstetterTEC(object):
         self.address = self._session.identify()
         logging.info("connected to {}".format(self.address))
 
-
     def session(self):
         if self._session is None:
             self._connect()
         return self._session
-
 
     def get_data(self):
         data = {}
@@ -114,12 +110,20 @@ class MeerstetterTEC(object):
         for description in self.queries:
             id, unit = COMMAND_TABLE[description]
             try:
-                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
                 data.update({description: (value, unit)})
             except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
                 self._session = None
         return data
+    
+    def get_param(self, param_id):
+        try:
+            value = self.session().get_parameter(parameter_id=param_id, address=self.address, parameter_instance=self.channel[0])
+        except (ResponseException, WrongChecksum) as ex:
+            self.session().stop()
+            self._session = None
+        return value
     
     def get_data_csv(self):
         data = []
@@ -132,24 +136,22 @@ class MeerstetterTEC(object):
         for query in CSV_QUERIES:
             id = COMMAND_TABLE[query][0]
             try:
-                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+                value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
                 data.append(value)
             except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
                 self._session = None
         return data
     
-    
     def get_temp(self) -> float:
         id = COMMAND_TABLE["object temperature"][0]
         try:
-            value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel)
+            value = self.session().get_parameter(parameter_id=id, address=self.address, parameter_instance=self.channel[0])
         except (ResponseException, WrongChecksum) as ex:
                 self.session().stop()
                 self._session = None
         return value 
-                
-                
+                  
     def set_temp(self, value):
         """
         Set object temperature of channel to desired value.
@@ -159,81 +161,52 @@ class MeerstetterTEC(object):
         """
         # assertion to explicitly enter floats
         assert type(value) is float
-        logging.info("set object temperature for channel {} to {} C".format(self.channel, value))
-        return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel)
+        logging.info("set object temperature for channel {} to {} C".format(self.channel[0], value))
+        logging.info("set object temperature for channel {} to {} C".format(self.channel[1], value))
 
+        self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel[0])
+        return self.session().set_parameter(parameter_id=3000, value=value, address=self.address, parameter_instance=self.channel[1])
 
-    def writeToCSV(self):
-        """    
-        Writes data to a CSV file.
-
-        This method opens a file named 'TEC_temperature_output.csv' and writes data to it in CSV format.
-        The data is obtained using the `get_data_csv` method, and the field names for the CSV
-        columns are specified in the `field_names` list.
-
-        Returns: 
-        None
-        """
-        
-        field_names = ["time", "object temperature", "output current", "output voltage"]
-        
-        
-        with open('TEC_temperature_output.csv', 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(field_names)
-            while not globals.kill_button_pressed:
-                data = self.get_data_csv()
-                writer.writerow(data)
-                time.sleep(1)  # Add a delay to avoid busy-waiting
-
-
-    def open_CSV_thread(self):
-        csv_thread = threading.Thread(target=self.writeToCSV)
-        csv_thread.daemon = True  # Ensure the thread exits when the main program does
-        csv_thread.start()
-    
-    def temperature_graph(self):
-        pass
-    
-    def ramp_to(self, target_temp, ramp_rate, hold_rate, autoGUI, scan, rampUp = True):
+    def ramp_to(self, target_temp, ramp_rate, hold_rate, autoGUI, end_ramp_event, rampUp = True):
 
         current_temp = self.get_temp() #get the current temperature
         rampTo = current_temp
-        
-        
-        while abs(current_temp - target_temp) > 0.01:  # using a tolerance of 0.01
-                
-                if globals.kill_button_pressed == True: #if the kill button is pressed, break out of the loop
-                    break
-                
-                if rampUp:
-                    #increment the rampTo value by the ramp_rate if the rampTo value plus the ramp_rate is less than the target_temp
-                    rampTo = rampTo + ramp_rate if rampTo + ramp_rate <= target_temp else target_temp 
-                else:
-                    #decrement the rampTo value by the ramp_rate if the rampTo value minus the ramp_rate is greater than the target_temp
-                    rampTo = rampTo - ramp_rate if rampTo - ramp_rate >= target_temp else target_temp
-                
-                print("ramping to: " + str(rampTo))
-                self.set_temp(rampTo)
-                                
-                while True:  #loop until the current temperature is within 0.01 of the rampTo value
-                    if globals.kill_button_pressed == True:
-                        break
-                    time.sleep(1)
-                    current_temp = self.get_temp()
-                    current_temp = float(current_temp)  #cast to a float
-                    print("currenTemp is: " + str(current_temp))
-                    if abs(current_temp - rampTo) < 0.01:
-                        break
-                
-                if scan == True: #if scan is true, scan at the current temperature
-                    autoGUI.scan(current_temp, hold_rate)
-                else: #otherwise, sleep for 15 seconds, allowing temp to stabilize
-                    time.sleep(15)
-        
+        times = []
+                       
+        while abs(current_temp - target_temp) > 0.1 and not end_ramp_event.is_set():  # using a tolerance of 0.01
+            if rampUp:
+                #increment the rampTo value by the ramp_rate if the rampTo value plus the ramp_rate is less than the target_temp
+                rampTo = rampTo + ramp_rate if rampTo + ramp_rate <= target_temp else target_temp 
+            else:
+                #decrement the rampTo value by the ramp_rate if the rampTo value minus the ramp_rate is greater than the target_temp
+                rampTo = rampTo - ramp_rate if rampTo - ramp_rate >= target_temp else target_temp
+            
+            print("ramping to: " + str(rampTo))
+            self.set_temp(rampTo)
+            first_time = time.time()                
+            
+            while abs(current_temp-rampTo)>0.1 and not end_ramp_event.is_set():  #loop until the current temperature is within 0.1 of the rampTo value
+                time.sleep(1)                                                   
+                current_temp = self.get_temp()
+                current_temp = float(current_temp)  #cast to a float
+                print("currenTemp is: " + str(current_temp))
 
+            second_time = time.time()
+            time_to_increment_temp = second_time - first_time
+            times.append(time_to_increment_temp)
+            print("time to increment temp: " + str(second_time - first_time))
+            
+            if autoGUI != None: #if scan is true, scan at the current temperature
+                autoGUI.scan(current_temp, hold_rate, end_ramp_event)  
+            else: #otherwise, sleep, allowing temp to stabilize
+                time.sleep(10)
+        """     
+        print(f'average time to increment temp is: {sum(times)/len(times)}')
+        print(f"times array: {times}")
+        """
     
-    def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
+    #TODO: clean ramp_temp and ramp_to methods !!!
+    def ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells, end_ramp_event):
         """
         Ramp the temperature to the target temperature with a specified ramp rate and hold rate.
 
@@ -247,40 +220,34 @@ class MeerstetterTEC(object):
         Returns:
         None
         """
-        
-        hold_rate= 10 + (numberOfWells*10) + 10 #calculate the hold rate based on the number of wells
-        autoGUI = automate_GUI() #initialize the automate_GUI class
-        autoGUI.getButtonLocation(10) #get the start button location
-        self.enable() #enable the TEC to allow for ramping
+        hold_rate= (numberOfWells*10) + 10 #calculate the hold rate based on the number of wells
+        autoGUI = automateGUI()  #create an automateGUI object
+        autoGUI.getButtonLocation() #get the start button location
         current_temp = self.get_temp() #get the current temperature
-
+        self.enable() #enable the TEC
         
+        start_time_of_ramp = time.time()
+
         #ramp to the initial starting temperature
         if starting_temp < current_temp: #if the starting temp is less than the current temp, ramp down to the starting temp
-            self.ramp_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = False)
+            self.ramp_to(starting_temp, 3, hold_rate, None, end_ramp_event, rampUp = False)
         else: #otherwise, ramp up to the starting temp
-            self.ramp_to(starting_temp, ramp_rate, hold_rate, autoGUI, scan = False, rampUp = True)
-        
+            self.ramp_to(starting_temp, 5, hold_rate, None, end_ramp_event, rampUp = True)
+    
         #initial scan at starting temp
         current_temp = self.get_temp()
-        autoGUI.scan(current_temp, hold_rate) 
-        print("starting temp is " + str(current_temp))
-        
+        autoGUI.scan(current_temp, hold_rate, end_ramp_event) 
+        print("starting temp is " + str(current_temp))  
+    
         #preform the actual ramping
         if self.get_temp() < target_temp:
-            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True, rampUp = True)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, end_ramp_event, rampUp = True)
         else:
-            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, scan = True,   rampUp = False)
+            self.ramp_to(target_temp, ramp_rate, hold_rate, autoGUI, end_ramp_event, rampUp = False)
         
-        #last scan at target temperature
-        if globals.kill_button_pressed == True: 
-            pass
-        else:
-            current_temp = self.get_temp()
-            autoGUI.scan(current_temp, hold_rate) 
-        #turn off the TEC
-        self.disable()
-                
+        end_time_of_ramp = time.time()
+        print(f'total time to ramp: {end_time_of_ramp - start_time_of_ramp}')          
+        end_ramp_event.set() #signal that the program is over
 
     def _set_enable(self, enable=True):
         """
@@ -291,15 +258,11 @@ class MeerstetterTEC(object):
         """
         value, description = (1, "on") if enable else (0, "off")
         logging.info("set loop for channel {} to {}".format(self.channel, description))
-        return self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel)
+        self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel[0])
+        return self.session().set_parameter(value=value, parameter_name="Status", address=self.address, parameter_instance=self.channel[1])
 
     def enable(self):
         return self._set_enable(True)
 
     def disable(self):
         return self._set_enable(False)
-    
-    def start_ramp_temp(self, starting_temp, target_temp, ramp_rate, numberOfWells):
-        # Run the ramp_temp method in a separate thread
-        thread = threading.Thread(target=self.ramp_temp, args=(starting_temp, target_temp, ramp_rate, numberOfWells))
-        thread.start()
