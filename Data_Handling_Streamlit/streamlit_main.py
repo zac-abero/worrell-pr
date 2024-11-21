@@ -31,7 +31,7 @@ def display_graph():
     if data:
         df = pd.read_csv(data, header=0)    
         cell_list = df['Cell'].unique().tolist()
-        cell = st.selectbox("Choose cell", cell_list)
+        cell = st.selectbox("Choose cell", cell_list) # radio updates for cells
         df = df[["Temperature", "Mean"]].loc[df['Cell'] == cell].apply(pd.to_numeric, errors = 'coerce') # converts to numeric, leaves "INVALIDs" as NaN
         st.dataframe(df)
 
