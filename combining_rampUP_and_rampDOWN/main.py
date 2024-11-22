@@ -11,7 +11,7 @@ import threading
 def main(): 
     # create a meerstetter TEC object
     MeerstetterTEC = Temp_Ramping.MeerstetterTEC()
-
+    print("TEC object created")
     # Create synchronization events
     end_ramp_event = threading.Event()
     start_ramp_event = threading.Event()
@@ -70,9 +70,6 @@ def handle_shutdown(gui, end_ramp_event, thread_manager):
         # Check again after 100ms
         if gui.root is not None:
             gui.root.after(100, lambda: handle_shutdown(gui, end_ramp_event, thread_manager))
-
-
-
 
 if __name__ == "__main__":
     main()

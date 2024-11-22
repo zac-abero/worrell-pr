@@ -43,8 +43,6 @@ class automateGUI:
                 print("Mouse has not moved for 5 seconds")    
                 self.popUpComfirmation(button_location[0], button_location[1])
             
-            
-    
     # Function to continue and close the window
     def on_continue(self, window,  current_mouse_x,  current_mouse_y ):
         self.final_mouse_x = current_mouse_x
