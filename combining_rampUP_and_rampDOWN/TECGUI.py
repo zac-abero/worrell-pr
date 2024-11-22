@@ -1,7 +1,6 @@
 import tkinter as tk  # GUI Library
 from tkinter import messagebox, ttk
 import time
-import threading
 
 """
 This file contains a basic GUI for the temperature ramping software in the file Temp_Ramping.py.
