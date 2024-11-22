@@ -3,7 +3,7 @@ from tkinter import messagebox
 from Temp_Ramping import MeerstetterTEC 
 import logging 
 import globals
-#import temperatureGraph
+import dataCollectionClasses
 
 """
 This file contains a basic GUI for the temperature ramping software in the file Temp_Ramping.py.
@@ -72,11 +72,15 @@ def startRamp():
     ramp_parameters = [starting_temp, target_temp, ramp_rate, number_of_wells]
 
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(module)s:%(levelname)s:%(message)s")
-    # get the values from DEFAULT_QUERIES
-    print(tec.get_data())
-    # yeet the values
-    # initialize temperature graph here (with threading)
+    
+    #initialize the data collection class
+    dc = dataCollectionClasses.dataCollection(tec)
+    dc.openThreadsDataCollection()
     tec.start_ramp_temp(starting_temp, target_temp, ramp_rate, number_of_wells)
+    
+    graph_temp_instance = dc.graphTemp(dc)
+    graph_temp_instance.run_animation() #trigger the animation, need to run here in the main thread 
+                                        #because matplotlib does not support threading
 
 
 def showInfo(buttonClicked):
@@ -89,7 +93,6 @@ def showInfo(buttonClicked):
     if buttonClicked == "Number of Wells":
         messagebox.showinfo("Info", "This dictates how long the settle/pause time for a scan is. More Wells = More Time")
     
-
 
 root = tk.Tk()
 root.geometry("400x570")
@@ -134,7 +137,6 @@ tk.Button(button_frame, text="Kill Ramp", command=killRampAtRoot).pack(side=tk.L
 
 # Adjust the parent frame to center the button_frame
 frame.columnconfigure(0, weight=1)
-
 
 updateCurrentTemp()
 

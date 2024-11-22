@@ -67,7 +67,7 @@ class automateGUI:
         window.geometry("350x100")
         
         # Create a label
-        label = tkinter.Label(window, text="Meredith did you select the correct button?")
+        label = tkinter.Label(window, text="Did you select the correct button?")
         label.pack(pady=10)
         
         #continue button

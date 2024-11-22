@@ -14,7 +14,6 @@ import datetime
 #import matplotlib.pyplot as plt
 #import matplotlib.animation as animation
 
-
 # default queries from command table below
 DEFAULT_QUERIES = [
     "loop status",
