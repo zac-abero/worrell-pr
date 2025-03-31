@@ -956,12 +956,6 @@ class MeComSerial(MeComCommon):
         return query
 
 
-class MeCom(MeComSerial):
-    """
-    Deprecated. Use MeComSerial instead.
-    """
-    pass
-
 
 if __name__ == "__main__":
     with MeComSerial("/dev/ttyUSB0") as mc:
