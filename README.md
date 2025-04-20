@@ -268,6 +268,30 @@ plate_reader/
 └── requirements.txt         # List of Python dependencies
 ```
 
+---
+
+## 🔧 Installation
+
+1. **Clone the repository**:
+ ```bash
+ git clone https://github.com/your-username/plate_reader.git
+ cd plate_reader
+ ```
+2. **Create and activate a virtual environment (recommended)**:
+  ```bash
+  python -m venv venv
+  venv\Scripts\activate
+  ```
+3. **Install dependencies**:
+  ```bash
+    pip install --upgrade pip
+    pip install -r requirements.txt
+  ```
+4. **run the program**
+  ```bash
+  python main.py
+  ```
+
 # Contextual References
 
 Cold Plates & Peltier Contextual videos
