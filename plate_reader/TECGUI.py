@@ -131,7 +131,7 @@ class GUI:
         self.root.after_cancel(self.update_current_temp) # Stop updating the temperature
 
     #pause ramp and adjacent helper functions
-    def pause_ramp(self, root):
+    def pause_ramp(self):
         held_temp = self.tec.get_temp()
         self.tec.set_temp(held_temp)
         
@@ -149,10 +149,10 @@ class GUI:
         continue_button.pack(side=tk.LEFT, padx=(10, 50), pady=10)
         
         #kill button
-        kill_button = tk.Button(new_window, text="Kill", command=lambda: self.end_ramp_helper(new_window, root))
+        kill_button = tk.Button(new_window, text="Kill", command=lambda: self.end_ramp_helper(new_window))
         kill_button.pack(side=tk.RIGHT, padx=(10, 50), pady=10)
     
-    def end_ramp_helper(self, new_window, root):
+    def end_ramp_helper(self, new_window):
         new_window.destroy()
         self.kill_ramp(True) 
         
