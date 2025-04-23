@@ -2,7 +2,8 @@
 
 ## **Project: Plate Reader Automation**
 
-This Python project automates data collection for an M1000 plate reader and Peltier system combo.
+This Python project automates data collection for an M1000 plate reader and Peltier system combo. 
+Originally made to identify glass transition temperature and temperature of vitrification in crosslinked polymers. 
 
 🔗 [Lab Website](https://www.bradyworrell.com/)
 
